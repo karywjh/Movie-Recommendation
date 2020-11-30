@@ -7,10 +7,9 @@
 
 #include <string>
 #include <limits.h>
+#include "vertex.h"
 
 using std::string;
-
-typedef string Vertex;
 
 /**
  * Represents an edge in a graph; used by the Graph class.
@@ -58,10 +57,37 @@ class Edge
     }
 
     /**
-     * Default constructor.
+     * Actor:       bool  30
+     * Director:    bool  30
+     * Country:     bool  10
+     * Year:    dif <= 5  10
+     * Genre:       bool  10
+     * Avg_vote: dif <= 2 10
+     * 
+     * Connect Score >= 30 (weight <= 1/30)
      */
-    Edge() : source(""), dest(""), label(""), weight(-1)
-    { /* nothing */
+    double calcWeight(Vertex u, Vertex v) {
+        int total_score;
+
+        if ((u.get_id() == v.get_id()))
+            total_score += 30;
+
+        if (u.get_director() == v.get_director())
+            total_score += 30;
+
+        if ((u.get_country() == v.get_country()))
+            total_score += 10;
+
+        if ((abs(u.get_year() - v.get_year()) <= 5))
+            total_score += 10;
+        
+        if ((u.get_genre() == v.get_genre()))
+            total_score += 10;
+
+        if ((abs(u.get_rating() - v.get_rating()) <= 2))
+            total_score += 10;
+        
+        return 1 / double(total_score);
     }
 
     /**
