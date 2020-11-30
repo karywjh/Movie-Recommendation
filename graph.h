@@ -35,6 +35,7 @@
 #include <vector>
 
 #include "edge.h"
+#include "vertex.h"
 #include "random.h"
 
 using std::cerr;

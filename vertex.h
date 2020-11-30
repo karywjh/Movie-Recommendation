@@ -5,6 +5,12 @@ using std::string;
 
 class Vertex {
     public:
+        // Constructors
+        Vertex(): id_("invalid_vertex") { /* nothing */ }
+        Vertex(string id, string name, string description, string language,
+               string actor, string director, string country, string genre, int year, double rating)
+            : id_(id), name_(name), description_(description), language_(language), actor_(actor), director_(director), country_(country), genre_(genre), year_(year), rating_(rating) { /* nothing */ }
+
         // Getters
         string get_id() const { return id_; }
         string get_name() const { return name_; };
@@ -18,6 +24,7 @@ class Vertex {
         int get_year() const { return year_; };
         double get_rating() const { return rating_; };
 
+        // Operators
         bool operator==(Vertex v) const;
         bool operator!=(Vertex v) const;
         
