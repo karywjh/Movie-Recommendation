@@ -35,6 +35,7 @@
 #include <vector>
 
 #include "edge.h"
+#include "random.h"
 
 using std::cerr;
 using std::cout;
@@ -238,6 +239,7 @@ private:
 
     bool weighted;
     bool directed;
+    Random random;
     int picNum;
     string picName;
 

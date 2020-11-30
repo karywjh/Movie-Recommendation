@@ -5,90 +5,91 @@ const int Graph::InvalidWeight = INT_MIN;
 const string Graph:: InvalidLabel = "_CS225INVALIDLABEL";
 const Edge Graph::InvalidEdge = Edge(Graph::InvalidVertex, Graph::InvalidVertex, Graph::InvalidWeight, Graph::InvalidLabel);
 
-Graph::Graph(bool weighted) : weighted(weighted),directed(false)
+Graph::Graph(bool weighted) : weighted(weighted),directed(false),random(Random(0))
 {
 }
 
-Graph::Graph(bool weighted, bool directed) : weighted(weighted),directed(directed)
+Graph::Graph(bool weighted, bool directed) : weighted(weighted),directed(directed),random(Random(0))
 {
 }
 
 Graph::Graph(bool weighted, int numVertices, unsigned long seed)
     :weighted(weighted),
-      directed(false) 
+      directed(false),
+     random(Random(seed)) 
 {
-//     if (numVertices < 2)
-//     {
-//      error("numVertices too low");
-//      exit(1);
-//     }
+    if (numVertices < 2)
+    {
+     error("numVertices too low");
+     exit(1);
+    }
 
-//     vector<Vertex> vertices;
-//     for (int i = 0; i < numVertices; i++)
-//     {
-//         insertVertex(to_string(i));
-//         vertices.push_back(to_string(i));
-//     }
+    vector<Vertex> vertices;
+    for (int i = 0; i < numVertices; i++)
+    {
+        insertVertex(to_string(i));
+        vertices.push_back(to_string(i));
+    }
 
-//     // make sure all vertices are connected
-//     random.shuffle(vertices);
-//     Vertex cur = vertices[0];
-//     for (size_t i = 0; i < vertices.size() - 1; ++i)
-//     {
-//         Vertex next = vertices[i + 1];
-//         insertEdge(cur, next);
-//         if (weighted) 
-//         {
-//             int weight = random.nextInt();
-//             setEdgeWeight(cur, next, weight);
-//         }
-//         cur = next;
-//     }
+    // make sure all vertices are connected
+    random.shuffle(vertices);
+    Vertex cur = vertices[0];
+    for (size_t i = 0; i < vertices.size() - 1; ++i)
+    {
+        Vertex next = vertices[i + 1];
+        insertEdge(cur, next);
+        if (weighted) 
+        {
+            int weight = random.nextInt();
+            setEdgeWeight(cur, next, weight);
+        }
+        cur = next;
+    }
 
-//     // keep the graph from being overpopulated with edges,
-//     //  while still maintaining a little randomness
-//     int numFailures = 0;
-//     int idx = 0;
-//     random.shuffle(vertices);
-//     while (numFailures < 2) 
-//     {
-//         if (!insertEdge(vertices[idx], vertices[idx + 1])) 
-//         {
-//             ++numFailures;
-//         } 
-//         else 
-//         {
-//             // if insertEdge() succeeded...
-//             if (weighted)
-//                 setEdgeWeight(vertices[idx], vertices[idx + 1],
-//                               random.nextInt());
-//             ++idx;
-//             if (idx >= numVertices - 2) 
-//             {
-//                 idx = 0;
-//                 random.shuffle(vertices);
-//             }
-//         }
-//     }
-// }
+    // keep the graph from being overpopulated with edges,
+    //  while still maintaining a little randomness
+    int numFailures = 0;
+    int idx = 0;
+    random.shuffle(vertices);
+    while (numFailures < 2) 
+    {
+        if (!insertEdge(vertices[idx], vertices[idx + 1])) 
+        {
+            ++numFailures;
+        } 
+        else 
+        {
+            // if insertEdge() succeeded...
+            if (weighted)
+                setEdgeWeight(vertices[idx], vertices[idx + 1],
+                              random.nextInt());
+            ++idx;
+            if (idx >= numVertices - 2) 
+            {
+                idx = 0;
+                random.shuffle(vertices);
+            }
+        }
+    }
+}
 
-// vector<Vertex> Graph::getAdjacent(Vertex source) const 
-// {
-//     auto lookup = adjacency_list.find(source);
+vector<Vertex> Graph::getAdjacent(Vertex source) const 
+{
+    auto lookup = adjacency_list.find(source);
 
-//     if(lookup == adjacency_list.end())
-//         return vector<Vertex>();
+    if(lookup == adjacency_list.end())
+        return vector<Vertex>();
 
-//     else
-//     {
-//         vector<Vertex> vertex_list;
-//         unordered_map <Vertex, Edge> & map = adjacency_list[source];
-//         for (auto it = map.begin(); it != map.end(); it++)
-//         {
-//             vertex_list.push_back(it->first);
-//         }
-//         return vertex_list;
-//     }
+    else
+    {
+        vector<Vertex> vertex_list;
+        unordered_map <Vertex, Edge> & map = adjacency_list[source];
+        for (auto it = map.begin(); it != map.end(); it++)
+        {
+            vertex_list.push_back(it->first);
+        }
+        return vertex_list;
+    }
 }
 
 
