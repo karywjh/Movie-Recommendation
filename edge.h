@@ -29,7 +29,7 @@ class Edge
      * @param v - the other vertex it is connected to
      */
     Edge(Vertex u, Vertex v)
-        : source(u), dest(v), label(""), weight(-1)
+        : source(u), dest(v), label(""), weight(calcWeight(u, v))
     { /* nothing */
     }
 
@@ -40,7 +40,7 @@ class Edge
      * @param lbl - the edge label
      */
     Edge(Vertex u, Vertex v, string lbl)
-        : source(u), dest(v), label(lbl), weight(-1)
+        : source(u), dest(v), label(lbl), weight(calcWeight(u, v))
     { /* nothing */
     }
 
@@ -53,6 +53,13 @@ class Edge
      */
     Edge(Vertex u, Vertex v, int w, string lbl)
         : source(u), dest(v), label(lbl), weight(w)
+    { /* nothing */
+    }
+
+    /**
+     * Default constructor.
+     */
+    Edge() : source(), dest(), label(""), weight(-1)
     { /* nothing */
     }
 
@@ -123,11 +130,7 @@ class Edge
      */
     bool operator==(Edge& other) const
     {
-        if (this->source != other.source)
-            return false;
-        if (this->dest != other.dest)
-            return false;
-        return true;
+        return this->source == other.source && this->dest == other.dest;
     }
 private:
     string label; /**< The edge label **/

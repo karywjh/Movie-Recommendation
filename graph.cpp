@@ -1,76 +1,16 @@
 #include "graph.h"
 
-const Vertex Graph::InvalidVertex = "_CS225INVALIDVERTEX";
+const Vertex Graph::InvalidVertex;
 const int Graph::InvalidWeight = INT_MIN;
 const string Graph:: InvalidLabel = "_CS225INVALIDLABEL";
 const Edge Graph::InvalidEdge = Edge(Graph::InvalidVertex, Graph::InvalidVertex, Graph::InvalidWeight, Graph::InvalidLabel);
 
-Graph::Graph(bool weighted) : weighted(weighted),directed(false),random(Random(0))
+Graph::Graph(bool weighted) : weighted(weighted),directed(false)
 {
 }
 
-Graph::Graph(bool weighted, bool directed) : weighted(weighted),directed(directed),random(Random(0))
+Graph::Graph(bool weighted, bool directed) : weighted(weighted),directed(directed)
 {
-}
-
-Graph::Graph(bool weighted, int numVertices, unsigned long seed)
-    :weighted(weighted),
-      directed(false),
-     random(Random(seed)) 
-{
-    if (numVertices < 2)
-    {
-     error("numVertices too low");
-     exit(1);
-    }
-
-    vector<Vertex> vertices;
-    for (int i = 0; i < numVertices; i++)
-    {
-        insertVertex(to_string(i));
-        vertices.push_back(to_string(i));
-    }
-
-    // make sure all vertices are connected
-    random.shuffle(vertices);
-    Vertex cur = vertices[0];
-    for (size_t i = 0; i < vertices.size() - 1; ++i)
-    {
-        Vertex next = vertices[i + 1];
-        insertEdge(cur, next);
-        if (weighted) 
-        {
-            int weight = random.nextInt();
-            setEdgeWeight(cur, next, weight);
-        }
-        cur = next;
-    }
-
-    // keep the graph from being overpopulated with edges,
-    //  while still maintaining a little randomness
-    int numFailures = 0;
-    int idx = 0;
-    random.shuffle(vertices);
-    while (numFailures < 2) 
-    {
-        if (!insertEdge(vertices[idx], vertices[idx + 1])) 
-        {
-            ++numFailures;
-        } 
-        else 
-        {
-            // if insertEdge() succeeded...
-            if (weighted)
-                setEdgeWeight(vertices[idx], vertices[idx + 1],
-                              random.nextInt());
-            ++idx;
-            if (idx >= numVertices - 2) 
-            {
-                idx = 0;
-                random.shuffle(vertices);
-            }
-        }
-    }
 }
 
 vector<Vertex> Graph::getAdjacent(Vertex source) const 
@@ -309,7 +249,7 @@ bool Graph::assertEdgeExists(Vertex source, Vertex destination, string functionN
     if(adjacency_list[source].find(destination)== adjacency_list[source].end())
     {
         if (functionName != "")
-            error(functionName + " called on nonexistent edge " + source + " -> " + destination);
+            error(functionName + " called on nonexistent edge " + source.get_name() + " -> " + InvalidVertex.get_name());
         return false;
     }
 
@@ -320,7 +260,7 @@ bool Graph::assertEdgeExists(Vertex source, Vertex destination, string functionN
         if(adjacency_list[destination].find(source)== adjacency_list[destination].end())
         {
             if (functionName != "")
-                error(functionName + " called on nonexistent edge " + destination + " -> " + source);
+                error(functionName + " called on nonexistent edge " + destination.get_name() + " -> " + source.get_name());
             return false;
         }
     }
@@ -348,147 +288,147 @@ void Graph::error(string message) const
     cerr << "\033[1;31m[Graph Error]\033[0m " + message << endl;
 }
 
-/**
- * Creates a name for snapshots of the graph.
- * @param title - the name to save the snapshots as
- */
-void Graph::initSnapshot(string title)
-{
-    picNum = 0;
-    picName = title;
-}
+// /**
+//  * Creates a name for snapshots of the graph.
+//  * @param title - the name to save the snapshots as
+//  */
+// void Graph::initSnapshot(string title)
+// {
+//     picNum = 0;
+//     picName = title;
+// }
 
-/**
- * Saves a snapshot of the graph to file.
- * initSnapshot() must be run first.
- */
-void Graph::snapshot()
-{
-    std::stringstream ss;
-    ss << picNum;
-    string newName = picName + ss.str();
-    savePNG(newName);
-    ++picNum;
-}
+// /**
+//  * Saves a snapshot of the graph to file.
+//  * initSnapshot() must be run first.
+//  */
+// void Graph::snapshot()
+// {
+//     std::stringstream ss;
+//     ss << picNum;
+//     string newName = picName + ss.str();
+//     savePNG(newName);
+//     ++picNum;
+// }
 
-/**
- * Prints the graph to stdout.
- */
-void Graph::print() const
-{
-    for (auto it = adjacency_list.begin(); it != adjacency_list.end(); ++it) 
-    {
-        cout << it->first << endl;
-        for (auto it2 = it->second.begin(); it2 != it->second.end(); ++it2) 
-        {
-            std::stringstream ss;
-            ss << it2->first; 
-            string vertexColumn = "    => " + ss.str();
-            vertexColumn += " " ;
-            cout << std::left << std::setw(26) << vertexColumn;
-            string edgeColumn = "edge label = \"" + it2->second.getLabel()+ "\"";
-            cout << std::left << std::setw(26) << edgeColumn;
-            if (weighted)
-                cout << "weight = " << it2->second.getWeight();
-            cout << endl;
-        }
-        cout << endl;
-    }
-}
+// /**
+//  * Prints the graph to stdout.
+//  */
+// void Graph::print() const
+// {
+//     for (auto it = adjacency_list.begin(); it != adjacency_list.end(); ++it) 
+//     {
+//         cout << it->first << endl;
+//         for (auto it2 = it->second.begin(); it2 != it->second.end(); ++it2) 
+//         {
+//             std::stringstream ss;
+//             ss << it2->first; 
+//             string vertexColumn = "    => " + ss.str();
+//             vertexColumn += " " ;
+//             cout << std::left << std::setw(26) << vertexColumn;
+//             string edgeColumn = "edge label = \"" + it2->second.getLabel()+ "\"";
+//             cout << std::left << std::setw(26) << edgeColumn;
+//             if (weighted)
+//                 cout << "weight = " << it2->second.getWeight();
+//             cout << endl;
+//         }
+//         cout << endl;
+//     }
+// }
 
-/**
- * Saves the graph as a PNG image.
- * @param title - the filename of the PNG image
- */
-void Graph::savePNG(string title) const
-{
-    std::ofstream neatoFile;
-    string filename = "images/" + title + ".dot";
-    neatoFile.open(filename.c_str());
+// /**
+//  * Saves the graph as a PNG image.
+//  * @param title - the filename of the PNG image
+//  */
+// void Graph::savePNG(string title) const
+// {
+//     std::ofstream neatoFile;
+//     string filename = "images/" + title + ".dot";
+//     neatoFile.open(filename.c_str());
 
-    if (!neatoFile.good())
-        error("couldn't create " + filename + ".dot");
+//     if (!neatoFile.good())
+//         error("couldn't create " + filename + ".dot");
 
-    neatoFile
-        << "strict graph G {\n"
-        << "\toverlap=\"false\";\n"
-        << "\tdpi=\"1300\";\n"
-        << "\tsep=\"1.5\";\n"
-        << "\tnode [fixedsize=\"true\", shape=\"circle\", fontsize=\"7.0\"];\n"
-        << "\tedge [penwidth=\"1.5\", fontsize=\"7.0\"];\n";
+//     neatoFile
+//         << "strict graph G {\n"
+//         << "\toverlap=\"false\";\n"
+//         << "\tdpi=\"1300\";\n"
+//         << "\tsep=\"1.5\";\n"
+//         << "\tnode [fixedsize=\"true\", shape=\"circle\", fontsize=\"7.0\"];\n"
+//         << "\tedge [penwidth=\"1.5\", fontsize=\"7.0\"];\n";
 
-    vector<Vertex> allv = getVertices();
-    //lambda expression
-    sort(allv.begin(), allv.end(), [](const Vertex& lhs, const Vertex& rhs) {
-        return stoi(lhs.substr(3)) > stoi(rhs.substr(3));
-    });
+//     vector<Vertex> allv = getVertices();
+//     //lambda expression
+//     sort(allv.begin(), allv.end(), [](const Vertex& lhs, const Vertex& rhs) {
+//         return stoi(lhs.substr(3)) > stoi(rhs.substr(3));
+//     });
 
-    int xpos1 = 100;
-    int xpos2 = 100;
-    int xpos, ypos;
-    for (auto it : allv) {
-        string current = it;
-        neatoFile 
-            << "\t\"" 
-            << current
-            << "\"";
-        if (current[1] == '1') {
-            ypos = 100;
-            xpos = xpos1;
-            xpos1 += 100;
-        }
-        else {
-            ypos = 200;
-            xpos = xpos2;
-            xpos2 += 100;
-        }
-        neatoFile << "[pos=\""<< xpos << "," << ypos <<"\"]";
-        neatoFile << ";\n";
-    }
+//     int xpos1 = 100;
+//     int xpos2 = 100;
+//     int xpos, ypos;
+//     for (auto it : allv) {
+//         string current = it;
+//         neatoFile 
+//             << "\t\"" 
+//             << current
+//             << "\"";
+//         if (current[1] == '1') {
+//             ypos = 100;
+//             xpos = xpos1;
+//             xpos1 += 100;
+//         }
+//         else {
+//             ypos = 200;
+//             xpos = xpos2;
+//             xpos2 += 100;
+//         }
+//         neatoFile << "[pos=\""<< xpos << "," << ypos <<"\"]";
+//         neatoFile << ";\n";
+//     }
 
-    neatoFile << "\tedge [penwidth=\"1.5\", fontsize=\"7.0\"];\n";
+//     neatoFile << "\tedge [penwidth=\"1.5\", fontsize=\"7.0\"];\n";
 
-    for (auto it = adjacency_list.begin(); it != adjacency_list.end(); ++it) 
-    {
-        for (auto it2 = it->second.begin(); it2 != it->second.end(); ++it2) 
-        {
-            string vertex1Text = it->first;
-            string vertex2Text = it2->first;
+//     for (auto it = adjacency_list.begin(); it != adjacency_list.end(); ++it) 
+//     {
+//         for (auto it2 = it->second.begin(); it2 != it->second.end(); ++it2) 
+//         {
+//             string vertex1Text = it->first;
+//             string vertex2Text = it2->first;
 
-            neatoFile << "\t\"" ;
-            neatoFile << vertex1Text;
-            neatoFile << "\" -- \"" ;
-            neatoFile << vertex2Text;
-            neatoFile << "\"";
+//             neatoFile << "\t\"" ;
+//             neatoFile << vertex1Text;
+//             neatoFile << "\" -- \"" ;
+//             neatoFile << vertex2Text;
+//             neatoFile << "\"";
 
-            string edgeLabel = it2->second.getLabel();
-            if (edgeLabel == "WIN") {
-                neatoFile << "[color=\"blue\"]";
-            } else if (edgeLabel == "LOSE") {
-                neatoFile << "[color=\"red\"]";                
-            } else {
-                neatoFile << "[color=\"grey\"]";
-            }
-            if (weighted && it2->second.getWeight() != -1)
-                neatoFile << "[label=\"" << it2->second.getWeight() << "\"]";
+//             string edgeLabel = it2->second.getLabel();
+//             if (edgeLabel == "WIN") {
+//                 neatoFile << "[color=\"blue\"]";
+//             } else if (edgeLabel == "LOSE") {
+//                 neatoFile << "[color=\"red\"]";                
+//             } else {
+//                 neatoFile << "[color=\"grey\"]";
+//             }
+//             if (weighted && it2->second.getWeight() != -1)
+//                 neatoFile << "[label=\"" << it2->second.getWeight() << "\"]";
             
-            neatoFile<< "[constraint = \"false\"]" << ";\n";
-        }
-    }
+//             neatoFile<< "[constraint = \"false\"]" << ";\n";
+//         }
+//     }
 
-    neatoFile << "}";
-    neatoFile.close();
-    string command = "neato -n -Tpng " + filename + " -o " + "images/" + title
-                     + ".png 2> /dev/null";
-    int result = system(command.c_str());
+//     neatoFile << "}";
+//     neatoFile.close();
+//     string command = "neato -n -Tpng " + filename + " -o " + "images/" + title
+//                      + ".png 2> /dev/null";
+//     int result = system(command.c_str());
 
 
-    if (result == 0) {
-        cout << "Output graph saved as images/" << title << ".png" << endl;
-    } else {
-        cout << "Failed to generate visual output graph using `neato`. Install `graphviz` or `neato` to generate a visual graph." << endl;
-    }
+//     if (result == 0) {
+//         cout << "Output graph saved as images/" << title << ".png" << endl;
+//     } else {
+//         cout << "Failed to generate visual output graph using `neato`. Install `graphviz` or `neato` to generate a visual graph." << endl;
+//     }
 
-    string rmCommand = "rm -f " + filename + " 2> /dev/null";
-    system(rmCommand.c_str());
-}
+//     string rmCommand = "rm -f " + filename + " 2> /dev/null";
+//     system(rmCommand.c_str());
+// }
