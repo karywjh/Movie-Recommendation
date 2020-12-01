@@ -35,7 +35,7 @@
 #include <vector>
 
 #include "edge.h"
-#include "vertex.h"
+#include "random.h"
 
 using std::cerr;
 using std::cout;
@@ -71,6 +71,15 @@ public:
      * @param directed - specifies whether the graph is directed
      */
     Graph(bool weighted, bool directed);
+
+    /**
+     * Constructor to create a random, connected graph.
+     * @param weighted - specifies whether the graph is a weighted graph or
+     *  not
+     * @param numVertices - the number of vertices the graph will have
+     * @param seed - a random seed to create the graph with
+     */
+    Graph(bool weighted, int numVertices, unsigned long seed);
 
     /**
      * Gets all adjacent vertices to the parameter vertex.
@@ -230,6 +239,10 @@ private:
 
     bool weighted;
     bool directed;
+    Random random;
+    int picNum;
+    string picName;
+
 
     /**
      * Returns whether a given vertex exists in the graph.

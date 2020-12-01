@@ -6,7 +6,7 @@ using std::string;
 class Vertex {
     public:
         // Constructors
-        Vertex(): name_("invalid_vertex") { /* nothing */ }
+        Vertex(): id_("invalid_vertex") { /* nothing */ }
         Vertex(string id, string name, string description, string language,
                string actor, string director, string country, string genre, int year, double rating)
             : id_(id), name_(name), description_(description), language_(language), actor_(actor), director_(director), country_(country), genre_(genre), year_(year), rating_(rating) { /* nothing */ }
@@ -23,19 +23,6 @@ class Vertex {
         string get_genre() const { return genre_; };
         int get_year() const { return year_; };
         double get_rating() const { return rating_; };
-
-        // Setters
-        void set_id(string id) { id_ = id; }
-        void set_name(string name) { name_ = name; };
-        void set_description(string description) { description_ = description; };
-        void set_language(string language) { language_ = language; };
-
-        void set_actor(string actor) { actor_ = actor; };
-        void set_director(string director) { director_ = director; };
-        void set_country(string country) { country_ = country; };
-        void set_genre(string genre) { genre_ = genre; };
-        int set_year(int year) { year_ = year; };
-        double set_rating(double rating) { rating = rating_; };
 
         // Operators
         bool operator==(Vertex v) const;

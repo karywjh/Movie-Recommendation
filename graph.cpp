@@ -5,13 +5,73 @@ const int Graph::InvalidWeight = INT_MIN;
 const string Graph:: InvalidLabel = "_CS225INVALIDLABEL";
 const Edge Graph::InvalidEdge = Edge(Graph::InvalidVertex, Graph::InvalidVertex, Graph::InvalidWeight, Graph::InvalidLabel);
 
-Graph::Graph(bool weighted) : weighted(weighted),directed(false)
+Graph::Graph(bool weighted) : weighted(weighted),directed(false),random(Random(0))
 {
 }
 
-Graph::Graph(bool weighted, bool directed) : weighted(weighted),directed(directed)
+Graph::Graph(bool weighted, bool directed) : weighted(weighted),directed(directed),random(Random(0))
 {
 }
+
+// Graph::Graph(bool weighted, int numVertices, unsigned long seed)
+//     :weighted(weighted),
+//       directed(false),
+//      random(Random(seed)) 
+// {
+//     if (numVertices < 2)
+//     {
+//      error("numVertices too low");
+//      exit(1);
+//     }
+
+//     vector<Vertex> vertices;
+//     for (int i = 0; i < numVertices; i++)
+//     {
+//         insertVertex(to_string(i));
+//         vertices.push_back(to_string(i));
+//     }
+
+//     // make sure all vertices are connected
+//     random.shuffle(vertices);
+//     Vertex cur = vertices[0];
+//     for (size_t i = 0; i < vertices.size() - 1; ++i)
+//     {
+//         Vertex next = vertices[i + 1];
+//         insertEdge(cur, next);
+//         if (weighted) 
+//         {
+//             int weight = random.nextInt();
+//             setEdgeWeight(cur, next, weight);
+//         }
+//         cur = next;
+//     }
+
+//     // keep the graph from being overpopulated with edges,
+//     //  while still maintaining a little randomness
+//     int numFailures = 0;
+//     int idx = 0;
+//     random.shuffle(vertices);
+//     while (numFailures < 2) 
+//     {
+//         if (!insertEdge(vertices[idx], vertices[idx + 1])) 
+//         {
+//             ++numFailures;
+//         } 
+//         else 
+//         {
+//             // if insertEdge() succeeded...
+//             if (weighted)
+//                 setEdgeWeight(vertices[idx], vertices[idx + 1],
+//                               random.nextInt());
+//             ++idx;
+//             if (idx >= numVertices - 2) 
+//             {
+//                 idx = 0;
+//                 random.shuffle(vertices);
+//             }
+//         }
+//     }
+// }
 
 vector<Vertex> Graph::getAdjacent(Vertex source) const 
 {
@@ -249,7 +309,7 @@ bool Graph::assertEdgeExists(Vertex source, Vertex destination, string functionN
     if(adjacency_list[source].find(destination)== adjacency_list[source].end())
     {
         if (functionName != "")
-            error(functionName + " called on nonexistent edge " + source.get_name() + " -> " + InvalidVertex.get_name());
+            error(functionName + " called on nonexistent edge " + source.get_id() + " -> " + destination.get_id());
         return false;
     }
 
@@ -260,7 +320,7 @@ bool Graph::assertEdgeExists(Vertex source, Vertex destination, string functionN
         if(adjacency_list[destination].find(source)== adjacency_list[destination].end())
         {
             if (functionName != "")
-                error(functionName + " called on nonexistent edge " + destination.get_name() + " -> " + source.get_name());
+                error(functionName + " called on nonexistent edge " + destination.get_id() + " -> " + source.get_id());
             return false;
         }
     }
@@ -288,58 +348,58 @@ void Graph::error(string message) const
     cerr << "\033[1;31m[Graph Error]\033[0m " + message << endl;
 }
 
-// /**
-//  * Creates a name for snapshots of the graph.
-//  * @param title - the name to save the snapshots as
-//  */
-// void Graph::initSnapshot(string title)
-// {
-//     picNum = 0;
-//     picName = title;
-// }
+/**
+ * Creates a name for snapshots of the graph.
+ * @param title - the name to save the snapshots as
+ */
+void Graph::initSnapshot(string title)
+{
+    picNum = 0;
+    picName = title;
+}
 
-// /**
-//  * Saves a snapshot of the graph to file.
-//  * initSnapshot() must be run first.
-//  */
-// void Graph::snapshot()
-// {
-//     std::stringstream ss;
-//     ss << picNum;
-//     string newName = picName + ss.str();
-//     savePNG(newName);
-//     ++picNum;
-// }
+/**
+ * Saves a snapshot of the graph to file.
+ * initSnapshot() must be run first.
+ */
+void Graph::snapshot()
+{
+    std::stringstream ss;
+    ss << picNum;
+    string newName = picName + ss.str();
+    savePNG(newName);
+    ++picNum;
+}
 
-// /**
-//  * Prints the graph to stdout.
-//  */
-// void Graph::print() const
-// {
-//     for (auto it = adjacency_list.begin(); it != adjacency_list.end(); ++it) 
-//     {
-//         cout << it->first << endl;
-//         for (auto it2 = it->second.begin(); it2 != it->second.end(); ++it2) 
-//         {
-//             std::stringstream ss;
-//             ss << it2->first; 
-//             string vertexColumn = "    => " + ss.str();
-//             vertexColumn += " " ;
-//             cout << std::left << std::setw(26) << vertexColumn;
-//             string edgeColumn = "edge label = \"" + it2->second.getLabel()+ "\"";
-//             cout << std::left << std::setw(26) << edgeColumn;
-//             if (weighted)
-//                 cout << "weight = " << it2->second.getWeight();
-//             cout << endl;
-//         }
-//         cout << endl;
-//     }
-// }
+/**
+ * Prints the graph to stdout.
+ */
+void Graph::print() const
+{
+    for (auto it = adjacency_list.begin(); it != adjacency_list.end(); ++it) 
+    {
+        cout << it->first.get_id() << endl;
+        for (auto it2 = it->second.begin(); it2 != it->second.end(); ++it2) 
+        {
+            std::stringstream ss;
+            ss << it2->first.get_id(); 
+            string vertexColumn = "    => " + ss.str();
+            vertexColumn += " " ;
+            cout << std::left << std::setw(26) << vertexColumn;
+            string edgeColumn = "edge label = \"" + it2->second.getLabel()+ "\"";
+            cout << std::left << std::setw(26) << edgeColumn;
+            if (weighted)
+                cout << "weight = " << it2->second.getWeight();
+            cout << endl;
+        }
+        cout << endl;
+    }
+}
 
-// /**
-//  * Saves the graph as a PNG image.
-//  * @param title - the filename of the PNG image
-//  */
+/**
+ * Saves the graph as a PNG image.
+ * @param title - the filename of the PNG image
+ */
 // void Graph::savePNG(string title) const
 // {
 //     std::ofstream neatoFile;
