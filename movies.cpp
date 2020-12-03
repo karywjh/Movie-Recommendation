@@ -6,6 +6,16 @@ Movies::Movies() : g_(true) {
 
 }
 
+// Movies::Movies(file) : g_(true) {
+
+//     // read every line and insert node
+//     for (every line) {
+//         // read data into vertex
+//         Vertex v; // TODO
+        
+//         insertMovieConnection(v);
+//     }
+// }
 
 void Movies::insertMovieConnection(Vertex v) {
     // Connect it with other vertices
@@ -70,7 +80,7 @@ void Movies::BFS(Graph G, Vertex v) {
 double Movies::calcWeight(Vertex u, Vertex v) {
     int total_score;
 
-    if ((u.get_id() == v.get_id()))
+    if ((u.get_actor() == v.get_actor()))
         total_score += 30;
 
     if (u.get_director() == v.get_director())
@@ -82,7 +92,7 @@ double Movies::calcWeight(Vertex u, Vertex v) {
     if ((abs(u.get_year() - v.get_year()) <= 5))
         total_score += 10;
 
-    if ((abs(u.get_popularity() - v.get_popularity()) <= 2))
+    if ((abs(u.get_popularity() - v.get_popularity()) <= 10))
         total_score += 10;
 
     for(auto i = u.get_genre().begin(); i != u.get_genre().end(); i++) {
