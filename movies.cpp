@@ -1,11 +1,13 @@
 #include "movies.h"
 #include <queue>
 #include <iostream>
+#include <sstream>
 
 using std::string;
 using std::queue;
 using std::cout;
 using std::endl;
+using std::quoted;
 
 Movies::Movies() : g_(true) {
 
@@ -17,16 +19,94 @@ Movies::Movies(vector<Vertex> vertices) : g_(true) {
     }
 }
 
-// Movies::Movies(file) : g_(true) {
+ Movies::Movies(string file) : g_(true) {
 
-//     // read every line and insert node
+     // read every line and insert node 
+ string id;
+ string name;
+ string language;
+ string forquote;
+ vector<string> actors;
+ string actor;
+ string director;
+ string country;
+ vector<string> genre;
+ string gen;
+ string yearstr;
+ int year;
+ string rat;
+ double rating;
+ string pop;
+ double popularity;
+ string description;
+
+std::ifstream inFile(file);
+
+if(!inFile.is_open()) throw std::runtime_error("Could not open file");
+
+ string line, c;
+ int nline = 0;
+
+  while (getline(inFile, id, ',')){
+      actors.clear();
+      genre.clear();
+    getline(inFile, name, ','); 
+    getline(inFile, language, ','); 
+    if(inFile.peek() == '"') {
+    getline(inFile, forquote, '"'); 
+        while (actor.back() != '"') {
+            getline(inFile, actor, ',');
+            actors.push_back(actor); 
+        } 
+    actor.pop_back();
+    actors.pop_back();
+    actors.push_back(actor);
+    getline(inFile, director, ','); 
+    getline(inFile, country, ',');
+    if(inFile.peek() == '"') {
+    getline(inFile, forquote, '"'); 
+        while (gen.back() != '"') {
+            getline(inFile, gen, ','); 
+        } 
+    gen.pop_back();
+    genre.pop_back();
+    genre.push_back(gen);
+    getline(inFile, yearstr, ','); 
+    year = stoi(yearstr);
+    getline(inFile, rat, ',');
+    rating = std::stod(rat); 
+    getline(inFile, pop, ',');
+    popularity = std::stod(rat);
+    getline(inFile, description, '\n'); 
+    Vertex v(id, name, language, actors, director, country, genre, year, rating, popularity, description);
+    insertMovieConnection(v);
+
+    } else {
+       getline(inFile, gen, ','); 
+       genre.push_back(gen);
+       getline(inFile, yearstr, ','); 
+       year = stoi(yearstr);
+       getline(inFile, rat, ',');
+       rating = std::stod(rat); 
+       getline(inFile, pop, ',');
+       popularity = std::stod(rat);
+       getline(inFile, description, '\n'); 
+       Vertex v(id, name, language, actors, director, country, genre, year, rating, popularity, description);
+       insertMovieConnection(v);
+      }
+    }
+  }
+
+  
+
+      
+ 
 //     for (every line) {
 //         // read data into vertex
 //         Vertex v; // TODO
         
 //         insertMovieConnection(v);
-//     }
-// }
+}
 
 void Movies::insertMovieConnection(Vertex v) {
     // Connect it with other vertices

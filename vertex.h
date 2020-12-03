@@ -10,9 +10,9 @@ class Vertex {
         // Constructors
         Vertex(): id_("invalid_vertex") { /* nothing */ }
         Vertex(string id): id_(id) { /* nothing */ }
-        Vertex(string id, string name, string description, string language,
-               vector<string> actors, string director, string country, vector<string> genre, int year, double rating, double popularity)
-            : id_(id), name_(name), description_(description), language_(language), actors_(actors), director_(director), country_(country), genre_(genre), year_(year), rating_(rating), popularity_(popularity) { /* nothing */ }
+        Vertex(string id, string name, string language,
+               vector<string> actors, string director, string country, vector<string> genre, int year, double rating, double popularity, string description)
+            : id_(id), name_(name), language_(language), actors_(actors), director_(director), country_(country), genre_(genre), year_(year), rating_(rating), popularity_(popularity), description_(description) { /* nothing */ }
 
         // Getters
         // Below are all information about the movie
@@ -47,7 +47,7 @@ class Vertex {
     private:
         string id_;
         string name_;
-        string description_;
+        
         string language_;
 
         vector<string> actors_;
@@ -57,6 +57,7 @@ class Vertex {
         int year_;
         double rating_;
         double popularity_;
+        string description_;
 
         string label_;
 };

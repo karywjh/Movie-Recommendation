@@ -9,7 +9,7 @@ class Movies {
 
         Movies();
         Movies(vector<Vertex> vertices);
-        // Movies(file);
+        Movies(string file);
 
         /**
          * Returns a constant reference to the state space graph.
