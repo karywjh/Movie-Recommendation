@@ -132,14 +132,15 @@ vector<Edge> Graph::getEdges() const
         for (auto its = adjacency_list[source].begin(); its != adjacency_list[source].end(); its++)
         {
             Vertex destination = its->first;
-            if(seen.find(make_pair(source, destination)) == seen.end())
-            {
-                //this pair is never added to seen
-                ret.push_back(its->second);
-                seen.insert(make_pair(source,destination));
-                if(!directed)
-                {
-                    seen.insert(make_pair(destination, source));
+
+            if(seen.find(make_pair(source, destination)) == seen.end() ) {
+                // If it's undirected, the edge is only added once in two direction
+                // (modified to fit movies dataset)
+                if (!weighted || seen.find(make_pair(destination, source)) == seen.end()) {
+            
+                    //this pair is never added to seen
+                    ret.push_back(its->second);
+                    seen.insert(make_pair(source,destination));
                 }
             }
         }
@@ -217,14 +218,16 @@ Vertex Graph::removeVertex(Vertex v)
         }
         
         adjacency_list.erase(v);
-        for(auto it2 = adjacency_list.begin(); it2 != adjacency_list.end(); it2++)
-        {
-            Vertex u = it2->first;
-            if (it2->second.find(v)!=it2->second.end())
-            {
-                it2->second.erase(v);
-            }
-        }
+
+        // Comment out this part because Graph too large
+        // for(auto it2 = adjacency_list.begin(); it2 != adjacency_list.end(); it2++)
+        // {
+        //     Vertex u = it2->first;
+        //     if (it2->second.find(v)!=it2->second.end())
+        //     {
+        //         it2->second.erase(v);
+        //     }
+        // }
         return v;
     }
 
