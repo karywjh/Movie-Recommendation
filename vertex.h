@@ -9,6 +9,7 @@ class Vertex {
     public:
         // Constructors
         Vertex(): id_("invalid_vertex") { /* nothing */ }
+        Vertex(string id): id_(id) { /* nothing */ }
         Vertex(string id, string name, string description, string language,
                string actor, string director, string country, vector<string> genre, int year, double rating)
             : id_(id), name_(name), description_(description), language_(language), actor_(actor), director_(director), country_(country), genre_(genre), year_(year), rating_(rating) { /* nothing */ }
@@ -27,8 +28,8 @@ class Vertex {
         double get_rating() const { return rating_; };
 
         // Operators
-        bool operator==(Vertex v) const;
-        bool operator!=(Vertex v) const;
+        bool operator==(const Vertex& v) const;
+        bool operator!=(const Vertex& v) const;
         
     private:
         string id_;

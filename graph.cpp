@@ -1,6 +1,6 @@
 #include "graph.h"
 
-const Vertex Graph::InvalidVertex;
+const Vertex Graph::InvalidVertex = Vertex();
 const int Graph::InvalidWeight = INT_MIN;
 const string Graph:: InvalidLabel = "_CS225INVALIDLABEL";
 const Edge Graph::InvalidEdge = Edge(Graph::InvalidVertex, Graph::InvalidVertex, Graph::InvalidWeight, Graph::InvalidLabel);
@@ -13,65 +13,65 @@ Graph::Graph(bool weighted, bool directed) : weighted(weighted),directed(directe
 {
 }
 
-// Graph::Graph(bool weighted, int numVertices, unsigned long seed)
-//     :weighted(weighted),
-//       directed(false),
-//      random(Random(seed)) 
-// {
-//     if (numVertices < 2)
-//     {
-//      error("numVertices too low");
-//      exit(1);
-//     }
+Graph::Graph(bool weighted, int numVertices, unsigned long seed)
+    :weighted(weighted),
+      directed(false),
+     random(Random(seed)) 
+{
+    if (numVertices < 2)
+    {
+     error("numVertices too low");
+     exit(1);
+    }
 
-//     vector<Vertex> vertices;
-//     for (int i = 0; i < numVertices; i++)
-//     {
-//         insertVertex(to_string(i));
-//         vertices.push_back(to_string(i));
-//     }
+    vector<Vertex> vertices;
+    for (int i = 0; i < numVertices; i++)
+    {
+        insertVertex(to_string(i));
+        vertices.push_back(to_string(i));
+    }
 
-//     // make sure all vertices are connected
-//     random.shuffle(vertices);
-//     Vertex cur = vertices[0];
-//     for (size_t i = 0; i < vertices.size() - 1; ++i)
-//     {
-//         Vertex next = vertices[i + 1];
-//         insertEdge(cur, next);
-//         if (weighted) 
-//         {
-//             int weight = random.nextInt();
-//             setEdgeWeight(cur, next, weight);
-//         }
-//         cur = next;
-//     }
+    // make sure all vertices are connected
+    random.shuffle(vertices);
+    Vertex cur = vertices[0];
+    for (size_t i = 0; i < vertices.size() - 1; ++i)
+    {
+        Vertex next = vertices[i + 1];
+        insertEdge(cur, next);
+        if (weighted) 
+        {
+            int weight = random.nextInt();
+            setEdgeWeight(cur, next, weight);
+        }
+        cur = next;
+    }
 
-//     // keep the graph from being overpopulated with edges,
-//     //  while still maintaining a little randomness
-//     int numFailures = 0;
-//     int idx = 0;
-//     random.shuffle(vertices);
-//     while (numFailures < 2) 
-//     {
-//         if (!insertEdge(vertices[idx], vertices[idx + 1])) 
-//         {
-//             ++numFailures;
-//         } 
-//         else 
-//         {
-//             // if insertEdge() succeeded...
-//             if (weighted)
-//                 setEdgeWeight(vertices[idx], vertices[idx + 1],
-//                               random.nextInt());
-//             ++idx;
-//             if (idx >= numVertices - 2) 
-//             {
-//                 idx = 0;
-//                 random.shuffle(vertices);
-//             }
-//         }
-//     }
-// }
+    // keep the graph from being overpopulated with edges,
+    //  while still maintaining a little randomness
+    int numFailures = 0;
+    int idx = 0;
+    random.shuffle(vertices);
+    while (numFailures < 2) 
+    {
+        if (!insertEdge(vertices[idx], vertices[idx + 1])) 
+        {
+            ++numFailures;
+        } 
+        else 
+        {
+            // if insertEdge() succeeded...
+            if (weighted)
+                setEdgeWeight(vertices[idx], vertices[idx + 1],
+                              random.nextInt());
+            ++idx;
+            if (idx >= numVertices - 2) 
+            {
+                idx = 0;
+                random.shuffle(vertices);
+            }
+        }
+    }
+}
 
 vector<Vertex> Graph::getAdjacent(Vertex source) const 
 {
@@ -83,7 +83,7 @@ vector<Vertex> Graph::getAdjacent(Vertex source) const
     else
     {
         vector<Vertex> vertex_list;
-        unordered_map <Vertex, Edge> & map = adjacency_list[source];
+        unordered_map <Vertex, Edge, MyHash> & map = adjacency_list[source];
         for (auto it = map.begin(); it != map.end(); it++)
         {
             vertex_list.push_back(it->first);
@@ -197,7 +197,7 @@ void Graph::insertVertex(Vertex v)
     // will overwrite if old stuff was there
     removeVertex(v);
     // make it empty again
-    adjacency_list[v] = unordered_map<Vertex, Edge>();
+    adjacency_list[v] = unordered_map<Vertex, Edge, MyHash>();
 }
 
 
@@ -242,7 +242,7 @@ bool Graph::insertEdge(Vertex source, Vertex destination)
 
     if(adjacency_list.find(source)==adjacency_list.end())
     {
-        adjacency_list[source] = unordered_map<Vertex, Edge>();
+        adjacency_list[source] = unordered_map<Vertex, Edge, MyHash>();
     }
         //source vertex exists
     adjacency_list[source][destination] = Edge(source, destination);
@@ -250,7 +250,7 @@ bool Graph::insertEdge(Vertex source, Vertex destination)
     {
         if(adjacency_list.find(destination)== adjacency_list.end())
         {
-            adjacency_list[destination] = unordered_map<Vertex, Edge>();
+            adjacency_list[destination] = unordered_map<Vertex, Edge, MyHash>();
         }
         adjacency_list[destination][source] = Edge(source, destination);
     }
@@ -378,11 +378,11 @@ void Graph::print() const
 {
     for (auto it = adjacency_list.begin(); it != adjacency_list.end(); ++it) 
     {
-        cout << it->first.get_id() << endl;
+        cout << it->first.get_name() << endl;
         for (auto it2 = it->second.begin(); it2 != it->second.end(); ++it2) 
         {
             std::stringstream ss;
-            ss << it2->first.get_id(); 
+            ss << it2->first.get_name(); 
             string vertexColumn = "    => " + ss.str();
             vertexColumn += " " ;
             cout << std::left << std::setw(26) << vertexColumn;
@@ -400,95 +400,95 @@ void Graph::print() const
  * Saves the graph as a PNG image.
  * @param title - the filename of the PNG image
  */
-// void Graph::savePNG(string title) const
-// {
-//     std::ofstream neatoFile;
-//     string filename = "images/" + title + ".dot";
-//     neatoFile.open(filename.c_str());
+void Graph::savePNG(string title) const
+{
+    std::ofstream neatoFile;
+    string filename = "images/" + title + ".dot";
+    neatoFile.open(filename.c_str());
 
-//     if (!neatoFile.good())
-//         error("couldn't create " + filename + ".dot");
+    if (!neatoFile.good())
+        error("couldn't create " + filename + ".dot");
 
-//     neatoFile
-//         << "strict graph G {\n"
-//         << "\toverlap=\"false\";\n"
-//         << "\tdpi=\"1300\";\n"
-//         << "\tsep=\"1.5\";\n"
-//         << "\tnode [fixedsize=\"true\", shape=\"circle\", fontsize=\"7.0\"];\n"
-//         << "\tedge [penwidth=\"1.5\", fontsize=\"7.0\"];\n";
+    neatoFile
+        << "strict graph G {\n"
+        << "\toverlap=\"false\";\n"
+        << "\tdpi=\"1300\";\n"
+        << "\tsep=\"1.5\";\n"
+        << "\tnode [fixedsize=\"true\", shape=\"circle\", fontsize=\"7.0\"];\n"
+        << "\tedge [penwidth=\"1.5\", fontsize=\"7.0\"];\n";
 
-//     vector<Vertex> allv = getVertices();
-//     //lambda expression
-//     sort(allv.begin(), allv.end(), [](const Vertex& lhs, const Vertex& rhs) {
-//         return stoi(lhs.substr(3)) > stoi(rhs.substr(3));
-//     });
+    vector<Vertex> allv = getVertices();
+    //lambda expression
+    sort(allv.begin(), allv.end(), [](const Vertex& lhs, const Vertex& rhs) {
+        return stoi(lhs.get_id().substr(3)) > stoi(rhs.get_id().substr(3));
+    });
 
-//     int xpos1 = 100;
-//     int xpos2 = 100;
-//     int xpos, ypos;
-//     for (auto it : allv) {
-//         string current = it;
-//         neatoFile 
-//             << "\t\"" 
-//             << current
-//             << "\"";
-//         if (current[1] == '1') {
-//             ypos = 100;
-//             xpos = xpos1;
-//             xpos1 += 100;
-//         }
-//         else {
-//             ypos = 200;
-//             xpos = xpos2;
-//             xpos2 += 100;
-//         }
-//         neatoFile << "[pos=\""<< xpos << "," << ypos <<"\"]";
-//         neatoFile << ";\n";
-//     }
+    int xpos1 = 100;
+    int xpos2 = 100;
+    int xpos, ypos;
+    for (auto it : allv) {
+        string current = it.get_id();
+        neatoFile 
+            << "\t\"" 
+            << current
+            << "\"";
+        if (current[1] == '1') {
+            ypos = 100;
+            xpos = xpos1;
+            xpos1 += 100;
+        }
+        else {
+            ypos = 200;
+            xpos = xpos2;
+            xpos2 += 100;
+        }
+        neatoFile << "[pos=\""<< xpos << "," << ypos <<"\"]";
+        neatoFile << ";\n";
+    }
 
-//     neatoFile << "\tedge [penwidth=\"1.5\", fontsize=\"7.0\"];\n";
+    neatoFile << "\tedge [penwidth=\"1.5\", fontsize=\"7.0\"];\n";
 
-//     for (auto it = adjacency_list.begin(); it != adjacency_list.end(); ++it) 
-//     {
-//         for (auto it2 = it->second.begin(); it2 != it->second.end(); ++it2) 
-//         {
-//             string vertex1Text = it->first;
-//             string vertex2Text = it2->first;
+    for (auto it = adjacency_list.begin(); it != adjacency_list.end(); ++it) 
+    {
+        for (auto it2 = it->second.begin(); it2 != it->second.end(); ++it2) 
+        {
+            string vertex1Text = it->first.get_id();
+            string vertex2Text = it2->first.get_id();
 
-//             neatoFile << "\t\"" ;
-//             neatoFile << vertex1Text;
-//             neatoFile << "\" -- \"" ;
-//             neatoFile << vertex2Text;
-//             neatoFile << "\"";
+            neatoFile << "\t\"" ;
+            neatoFile << vertex1Text;
+            neatoFile << "\" -- \"" ;
+            neatoFile << vertex2Text;
+            neatoFile << "\"";
 
-//             string edgeLabel = it2->second.getLabel();
-//             if (edgeLabel == "WIN") {
-//                 neatoFile << "[color=\"blue\"]";
-//             } else if (edgeLabel == "LOSE") {
-//                 neatoFile << "[color=\"red\"]";                
-//             } else {
-//                 neatoFile << "[color=\"grey\"]";
-//             }
-//             if (weighted && it2->second.getWeight() != -1)
-//                 neatoFile << "[label=\"" << it2->second.getWeight() << "\"]";
+            string edgeLabel = it2->second.getLabel();
+            if (edgeLabel == "WIN") {
+                neatoFile << "[color=\"blue\"]";
+            } else if (edgeLabel == "LOSE") {
+                neatoFile << "[color=\"red\"]";                
+            } else {
+                neatoFile << "[color=\"grey\"]";
+            }
+            if (weighted && it2->second.getWeight() != -1)
+                neatoFile << "[label=\"" << it2->second.getWeight() << "\"]";
             
-//             neatoFile<< "[constraint = \"false\"]" << ";\n";
-//         }
-//     }
+            neatoFile<< "[constraint = \"false\"]" << ";\n";
+        }
+    }
 
-//     neatoFile << "}";
-//     neatoFile.close();
-//     string command = "neato -n -Tpng " + filename + " -o " + "images/" + title
-//                      + ".png 2> /dev/null";
-//     int result = system(command.c_str());
+    neatoFile << "}";
+    neatoFile.close();
+    string command = "neato -n -Tpng " + filename + " -o " + "images/" + title
+                     + ".png 2> /dev/null";
+    int result = system(command.c_str());
 
 
-//     if (result == 0) {
-//         cout << "Output graph saved as images/" << title << ".png" << endl;
-//     } else {
-//         cout << "Failed to generate visual output graph using `neato`. Install `graphviz` or `neato` to generate a visual graph." << endl;
-//     }
+    if (result == 0) {
+        cout << "Output graph saved as images/" << title << ".png" << endl;
+    } else {
+        cout << "Failed to generate visual output graph using `neato`. Install `graphviz` or `neato` to generate a visual graph." << endl;
+    }
 
-//     string rmCommand = "rm -f " + filename + " 2> /dev/null";
-//     system(rmCommand.c_str());
-// }
+    string rmCommand = "rm -f " + filename + " 2> /dev/null";
+    system(rmCommand.c_str());
+}

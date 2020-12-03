@@ -35,7 +35,9 @@
 #include <vector>
 
 #include "edge.h"
+#include "vertex.h"
 #include "random.h"
+#include "MyHash.h"
 
 using std::cerr;
 using std::cout;
@@ -235,7 +237,7 @@ public:
     const static string InvalidLabel;
 
 private:
-    mutable unordered_map<Vertex, unordered_map<Vertex, Edge>> adjacency_list;
+    mutable unordered_map<Vertex, unordered_map<Vertex, Edge, MyHash>, MyHash> adjacency_list;
 
     bool weighted;
     bool directed;
