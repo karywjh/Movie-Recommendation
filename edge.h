@@ -29,7 +29,12 @@ class Edge
      * @param v - the other vertex it is connected to
      */
     Edge(Vertex u, Vertex v)
-        : source(u), dest(v), label(""), weight(calcWeight(u, v))
+        : source(u), dest(v), label(""), weight(-1)
+    { /* nothing */
+    }
+
+    Edge(Vertex u, Vertex v, int w)
+        : source(u), dest(v), label(""), weight(w)
     { /* nothing */
     }
 
@@ -40,7 +45,7 @@ class Edge
      * @param lbl - the edge label
      */
     Edge(Vertex u, Vertex v, string lbl)
-        : source(u), dest(v), label(lbl), weight(calcWeight(u, v))
+        : source(u), dest(v), label(lbl), weight(-1)
     { /* nothing */
     }
 
@@ -61,46 +66,6 @@ class Edge
      */
     Edge() : source(), dest(), label(""), weight(-1)
     { /* nothing */
-    }
-
-    /**
-     * Actor:       bool  30
-     * Director:    bool  30
-     * Country:     bool  10
-     * Year:    dif <= 5  10
-     * Genre:       bool  10
-     * Avg_vote: dif <= 2 10
-     * 
-     * Connect Score >= 30 (weight <= 1/30)
-     */
-    double calcWeight(Vertex u, Vertex v) {
-        int total_score;
-
-        if ((u.get_id() == v.get_id()))
-            total_score += 30;
-
-        if (u.get_director() == v.get_director())
-            total_score += 30;
-
-        if ((u.get_country() == v.get_country()))
-            total_score += 10;
-
-        if ((abs(u.get_year() - v.get_year()) <= 5))
-            total_score += 10;
-
-        if ((abs(u.get_popularity() - v.get_popularity()) <= 2))
-            total_score += 10;
-
-        for(auto i = u.get_genre().begin(); i != u.get_genre().end(); i++) {
-            for(auto j = v.get_genre().begin(); j != v.get_genre().end(); j++) {
-                if (*i == *j) {
-                    total_score += 10;
-                    return 1 / double(total_score);
-                }
-            }
-        }
-        
-        return 1 / double(total_score);
     }
 
     /**

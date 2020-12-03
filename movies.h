@@ -8,7 +8,8 @@ class Movies {
     public:
 
         Movies();
-        
+        // Movies(file);
+
         /**
          * Returns a constant reference to the state space graph.
          *
@@ -19,6 +20,18 @@ class Movies {
         void BFS(Graph);
 
         void BFS(Graph, Vertex);
+
+        /**
+         * Actor:       bool  30
+         * Director:    bool  30
+         * Country:     bool  10
+         * Year:    dif <= 5  10
+         * Genre:       bool  10
+         * Avg_vote: dif <= 2 10
+         * 
+         * Connect Score >= 30 (weight <= 1/30)
+         */
+        double calcWeight(Vertex u, Vertex v);
 
     private:
         Graph g_;
