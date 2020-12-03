@@ -88,11 +88,18 @@ class Edge
         if ((abs(u.get_year() - v.get_year()) <= 5))
             total_score += 10;
         
-        if ((u.get_genre() == v.get_genre()))
-            total_score += 10;
 
         if ((abs(u.get_rating() - v.get_rating()) <= 2))
             total_score += 10;
+            
+        for(auto i = u.get_genre().begin(); i != u.get_genre().end(); i++) {
+            for(auto j = v.get_genre().begin(); j != v.get_genre().end(); j++) {
+                if (*i == *j) {
+                    total_score += 10;
+                    return 1 / double(total_score);
+                }
+            }
+        }
         
         return 1 / double(total_score);
     }
