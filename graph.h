@@ -83,6 +83,8 @@ public:
      */
     Graph(bool weighted, int numVertices, unsigned long seed);
 
+    bool isEmpty() const;
+
     /**
      * Gets all adjacent vertices to the parameter vertex.
      * @param source - vertex to get neighbors from

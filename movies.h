@@ -8,6 +8,7 @@ class Movies {
     public:
 
         Movies();
+        Movies(vector<Vertex> vertices);
         // Movies(file);
 
         /**

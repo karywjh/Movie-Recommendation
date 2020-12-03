@@ -1,9 +1,20 @@
 #include "movies.h"
 #include <queue>
+#include <iostream>
+
 using std::string;
 using std::queue;
+using std::cout;
+using std::endl;
+
 Movies::Movies() : g_(true) {
 
+}
+
+Movies::Movies(vector<Vertex> vertices) : g_(true) {
+    for (Vertex v : vertices) {
+        insertMovieConnection(v);
+    }
 }
 
 // Movies::Movies(file) : g_(true) {
@@ -19,16 +30,21 @@ Movies::Movies() : g_(true) {
 
 void Movies::insertMovieConnection(Vertex v) {
     // Connect it with other vertices
-    for (Vertex u: g_.getVertices()) {
-        double weight = calcWeight(v, u);
-        // Connect if similarity >= 30 (weight <= 1/30)
-        if (weight <= (1.0 / 30)) {
-            g_.insertEdge(v, u);
-            g_.setEdgeWeight(v, u, weight);
+    g_.insertVertex(v);
 
-            // Store edge to file
+    for (Vertex u: g_.getVertices()) {
+        if (v != u) {
+            double weight = calcWeight(v, u);
+            // Connect if similarity >= 30 (weight <= 1/30)
+            if (weight <= (1.0 / 30)) {
+                g_.insertEdge(v, u);
+                g_.setEdgeWeight(v, u, weight);
+
+                // Store edge to file
+            }
         }
     }
+
 }
 
 void Movies::BFS(Graph G) {
@@ -78,7 +94,7 @@ void Movies::BFS(Graph G, Vertex v) {
  * Connect Score >= 30 (weight <= 1/30)
  */
 double Movies::calcWeight(Vertex u, Vertex v) {
-    int total_score;
+    int total_score = 0;
 
     if ((u.get_actor() == v.get_actor()))
         total_score += 30;
@@ -99,10 +115,10 @@ double Movies::calcWeight(Vertex u, Vertex v) {
         for(auto j = v.get_genre().begin(); j != v.get_genre().end(); j++) {
             if (*i == *j) {
                 total_score += 10;
-                return 1 / double(total_score);
+                return 1.0 / double(total_score);
             }
         }
     }
     
-    return 1 / double(total_score);
+    return 1.0 / double(total_score);
 }

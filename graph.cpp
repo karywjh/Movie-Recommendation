@@ -73,6 +73,10 @@ Graph::Graph(bool weighted, int numVertices, unsigned long seed)
     }
 }
 
+bool Graph::isEmpty() const {
+    return adjacency_list.empty();
+}
+
 vector<Vertex> Graph::getAdjacent(Vertex source) const 
 {
     auto lookup = adjacency_list.find(source);
