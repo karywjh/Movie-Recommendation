@@ -36,21 +36,26 @@ class Vertex {
         void set_label(string label) {label_ = label;}
 
         // Operators
-        bool operator==(const Vertex& v) const;
-        bool operator!=(const Vertex& v) const;
+        bool operator==(const Vertex& v) const { return id_ == v.id_; }
+        bool operator!=(const Vertex& v) const { return id_ != v.id_; }
         
+        /**
+         * operator< is defined so Vertex can be used in Set.
+         */
+        bool operator<(const Vertex& v) const { return id_ < v.get_id(); }
+
     private:
         string id_;
         string name_;
         string description_;
         string language_;
-        double rating_;
 
         vector<string> actors_;
         string director_;
         string country_;
         vector<string> genre_;
         int year_;
+        double rating_;
         double popularity_;
 
         string label_;
