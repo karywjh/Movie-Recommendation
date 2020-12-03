@@ -87,11 +87,10 @@ class Edge
 
         if ((abs(u.get_year() - v.get_year()) <= 5))
             total_score += 10;
-        
 
-        if ((abs(u.get_rating() - v.get_rating()) <= 2))
+        if ((abs(u.get_popularity() - v.get_popularity()) <= 2))
             total_score += 10;
-            
+
         for(auto i = u.get_genre().begin(); i != u.get_genre().end(); i++) {
             for(auto j = v.get_genre().begin(); j != v.get_genre().end(); j++) {
                 if (*i == *j) {
@@ -121,6 +120,10 @@ class Edge
     string getLabel() const
     {
         return this->label;
+    }
+
+    void setLabel(string label_) {
+        label = label_;
     }
 
     /**

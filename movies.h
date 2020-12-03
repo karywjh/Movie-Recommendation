@@ -16,8 +16,11 @@ class Movies {
          */
         const Graph & getGraph() const { return g_; }
 
+        void BFS(Graph);
+
+        void BFS(Graph, Vertex);
 
     private:
         Graph g_;
         Vertex startingVertex_;
-}
+};

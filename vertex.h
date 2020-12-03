@@ -25,6 +25,10 @@ class Vertex {
         vector<string> get_genre() const { return genre_; };
         int get_year() const { return year_; };
         double get_rating() const { return rating_; };
+        double get_popularity() const {return popularity_;}
+        string get_label() const {return label_;}
+
+        void set_label(string label) {label_ = label;}
 
         // Operators
         bool operator==(Vertex v) const;
@@ -42,4 +46,6 @@ class Vertex {
         vector<string> genre_;
         int year_;
         double rating_;
+        double popularity_;
+        string label_;
 };
