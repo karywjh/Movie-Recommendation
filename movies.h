@@ -33,7 +33,12 @@ class Movies {
          */
         double calcWeight(Vertex u, Vertex v);
 
+        /**
+         * Check Vertex v's similarity with all existing vertices
+         * Connect if similarity reaches certain threshold
+         */
+        void insertMovieConnection(Vertex v);
+
     private:
         Graph g_;
-        Vertex startingVertex_;
 };

@@ -3,7 +3,22 @@
 using std::string;
 using std::queue;
 Movies::Movies() : g_(true) {
-    
+
+}
+
+
+void Movies::insertMovieConnection(Vertex v) {
+    // Connect it with other vertices
+    for (Vertex u: g_.getVertices()) {
+        double weight = calcWeight(v, u);
+        // Connect if similarity >= 30 (weight <= 1/30)
+        if (weight <= (1.0 / 30)) {
+            g_.insertEdge(v, u);
+            g_.setEdgeWeight(v, u, weight);
+
+            // Store edge to file
+        }
+    }
 }
 
 void Movies::BFS(Graph G) {
