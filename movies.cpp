@@ -111,30 +111,10 @@ void Movies::insertMovieConnection(Vertex v) {
                 g_.setEdgeWeight(v, u, weight);
 
                 // Store edge to file
-                string id_v = v.get_id();
-                string id_u = u.get_id();
-                a.push_back(id_v);
-                b.push_back(id_u);
             }
         }
     }
-}
-void Movies::write_csv(std::string filename, std::vector<std::pair<std::string, std::vector<string>>> dataset){
-    std::ofstream myFile(filename);
-    for(unsigned j = 0; j < dataset.size(); ++j) {
-        myFile << dataset.at(j).first;
-        if(j != dataset.size() - 1) myFile << ",";\
-    }
-    myFile << "\n";
-    for(unsigned i = 0; i < dataset.at(0).second.size(); ++i) {
-        for(unsigned j = 0; j < dataset.size(); ++j)
-        {
-            myFile << dataset.at(j).second.at(i);
-            if(j != dataset.size() - 1) myFile << ",";
-        }
-        myFile << "\n";
-    }
-    myFile.close();
+
 }
 
 void Movies::BFS(Graph G) {

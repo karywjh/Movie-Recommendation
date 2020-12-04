@@ -29,8 +29,6 @@ TEST_CASE("Movies constructor", "[weight=1][part=1]") {
   for (Vertex v : vertices) {
     m.insertMovieConnection(v);
   }
-  std::vector<std::pair<std::string, std::vector<string>>> ss = {{"first", m.a}, {"second", m.b}};
-  m.write_csv("test.csv", ss);
 
   // Print textual output of the graph:
   m.getGraph().print();
@@ -54,10 +52,7 @@ TEST_CASE("Movies constructor with read file", "[weight=1][part=1]") {
 
   for (Vertex v : m.getGraph().getVertices()) {
     cout << v.get_id() << " " << v.get_name() << endl;
-    m.insertMovieConnection(v);
   }
-  std::vector<std::pair<std::string, std::vector<string>>> ss = {{"first", m.a}, {"second", m.b}};
-  m.write_csv("test1.csv", ss);
 
   Graph g = m.getGraph();
   REQUIRE(g.vertexExists("tt0002101"));

@@ -10,8 +10,6 @@ class Movies {
         Movies();
         Movies(vector<Vertex> vertices);
         Movies(string file);
-        std::vector<string> a;
-        std::vector<string> b;
 
         /**
          * Returns a constant reference to the state space graph.
@@ -41,8 +39,6 @@ class Movies {
          * Connect if similarity reaches certain threshold
          */
         void insertMovieConnection(Vertex v);
-        void write_csv(std::string filename, std::vector<std::pair<std::string, std::vector<string>>> dataset);
-
 
     private:
         Graph g_;
