@@ -128,8 +128,8 @@ void Movies::insertMovieConnection(Vertex v) {
     for (Vertex u: g_.getVertices()) {
         if (v != u) {
             double weight = calcWeight(v, u);
-            // Connect if similarity >= 30 (weight <= 1/30)
-            if (weight <= (1.0 / 30)) {
+            // Connect if similarity >= 40 (weight <= 1/40)
+            if (weight <= (1.0 / 40)) {
                 g_.insertEdge(v, u);
                 g_.setEdgeWeight(v, u, weight);
 
@@ -203,9 +203,9 @@ void Movies::BFS(Graph G, Vertex v) {
  * Country:     bool  10
  * Year:    dif <= 5  10
  * Genre:       bool  10
- * Avg_vote: dif <= 2 10
+ * Popularity: dif <= 10 10
  * 
- * Connect Score >= 30 (weight <= 1/30)
+ * Connect Score >= 40 (weight <= 1/40)
  */
 double Movies::calcWeight(Vertex u, Vertex v) {
     int total_score = 0;

@@ -393,11 +393,11 @@ void Graph::print() const
 {
     for (auto it = adjacency_list.begin(); it != adjacency_list.end(); ++it) 
     {
-        cout << it->first.get_name() << endl;
+        cout << it->first.get_id() << ": " << it->first.get_name() << endl;
         for (auto it2 = it->second.begin(); it2 != it->second.end(); ++it2) 
         {
             std::stringstream ss;
-            ss << it2->first.get_name(); 
+            ss << it2->first.get_id() << ": " << it2->first.get_name(); 
             string vertexColumn = "    => " + ss.str();
             vertexColumn += " " ;
             cout << std::left << std::setw(26) << vertexColumn;
