@@ -43,25 +43,23 @@ Movies::Movies(string file) : g_(true) {
     getline(inFile, description, '\n'); // get rid of first line (title)
     int i = 0;
 
-    // Limited to 100 data, TBC
-    while (i <= 100 && getline(inFile, id, ',')) {
+    // Limited to 500 data, TBC
+    while (i <= 500 && getline(inFile, id, ',')) {
         actors.clear();
         genre.clear();
         language.clear();
         getline(inFile, name, ',');
+
         if (inFile.peek() == '"') {
             getline(inFile, forquote, '"');
-
-            while (lan.back() != '"') {
-                getline(inFile, lan, ',');
-                language += lan;
-            }
-            language.pop_back();
-
-        } else{
+            getline(inFile, language, '"');
+            getline(inFile, lan, ',');
+        } else {
             getline(inFile, language, ',');
         }
+
         getline(inFile, yearstr, ',');
+        // cout << id << " " << name << " " << language << " year:" << yearstr << "." << endl;
         year = stoi(yearstr);
         getline(inFile, rat, ',');
         rating = std::stod(rat);
@@ -113,6 +111,7 @@ Movies::Movies(string file) : g_(true) {
 void Movies::insertMovieConnection(Vertex v) {
     // Connect it with other vertices
     g_.insertVertex(v);
+    // cout << v.get_id() << " " << v.get_name() << endl;
 
     for (Vertex u: g_.getVertices()) {
         if (v != u) {
@@ -131,6 +130,7 @@ void Movies::insertMovieConnection(Vertex v) {
         }
     }
 }
+
 void Movies::write_csv(std::string filename, std::vector<std::pair<std::string, std::vector<string>>> dataset){
     std::ofstream myFile(filename);
     for(unsigned j = 0; j < dataset.size(); ++j) {
