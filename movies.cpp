@@ -181,14 +181,14 @@ double Movies::calcWeight(Vertex u, Vertex v) {
     if ((abs(u.get_popularity() - v.get_popularity()) <= 10))
         total_score += 10;
 
-    for(auto i = u.get_genre().begin(); i != u.get_genre().end(); i++) {
-        for(auto j = v.get_genre().begin(); j != v.get_genre().end(); j++) {
-            if (*i == *j) {
+    for (string su: u.get_genre()) {
+        for (string sv: v.get_genre()) {
+            if (su == sv) {
                 total_score += 10;
                 return 1.0 / double(total_score);
             }
         }
     }
-    
+
     return 1.0 / double(total_score);
 }
