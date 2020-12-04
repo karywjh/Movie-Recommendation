@@ -9,7 +9,6 @@ class MyHash {
     public: 
         size_t operator()(const Vertex& v) const
         { 
-            return (hash<string>()(v.get_id())) ^  
-                (hash<string>()(v.get_name()));
+            return hash<string>()(v.get_id());
         } 
 }; 
