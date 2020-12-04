@@ -70,3 +70,13 @@ TEST_CASE("Movies constructor with read entire file", "[weight=1][part=1]") {
 
   m.getGraph().print();
 }
+
+TEST_CASE("Movies constructor with num of lines as arg", "[weight=1][part=1]") {
+  Movies m("IMDb moviesCSV.csv", 500);
+  // for (Vertex v : m.getGraph().getVertices()) {
+  //   cout << v.get_id() << " " << v.get_name() << endl;
+  // }
+  cout << m.getGraph().getVertices().size() << endl;
+
+  // m.getGraph().print();
+}

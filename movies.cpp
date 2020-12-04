@@ -21,91 +21,103 @@ Movies::Movies(vector<Vertex> vertices) : g_(true) {
 
 Movies::Movies(string file) : g_(true) {
 
-    // read every line and insert node
-    string forquote;
-    vector<string> actors, genre;
-    string actor, gen;
-    string lan;
-
-    string id, name, language, director, country, description;
-    string yearstr, rat, pop;
-    int year;
-    double rating, popularity;
-
     std::ifstream inFile(file);
 
     if (!inFile.is_open())
         throw std::runtime_error("Could not open file");
 
-    string line, c;
-    int nline = 0;
+    string id, placeholder;
+    getline(inFile, placeholder, '\n'); // get rid of first line (title)
 
-    getline(inFile, description, '\n'); // get rid of first line (title)
+    // read every line and insert node
+    while (getline(inFile, id, ',')) {
+        Vertex v = lineToVertex(inFile, id);
+        insertMovieConnection(v);
+    }
+}
+
+Movies::Movies(string file, int num) : g_(true) {
+    std::ifstream inFile(file);
+
+    if (!inFile.is_open())
+        throw std::runtime_error("Could not open file");
+
+    string id, placeholder;
+    getline(inFile, placeholder, '\n'); // get rid of first line (title)
+
     int i = 0;
+    // Limited to num lines of data
+    while (i < num && getline(inFile, id, ',')) {
+        Vertex v = lineToVertex(inFile, id);
+        insertMovieConnection(v);
+        i++;
+    }
+}
 
-    // Limited to 500 data, TBC
-    while (i <= 500 && getline(inFile, id, ',')) {
-        actors.clear();
-        genre.clear();
-        language.clear();
-        getline(inFile, name, ',');
+Vertex Movies::lineToVertex(std::ifstream& inFile, string id) {
+    string forquote;
+    vector<string> actors, genre;
+    string actor, gen;
 
-        if (inFile.peek() == '"') {
-            getline(inFile, forquote, '"');
-            getline(inFile, language, '"');
-            getline(inFile, lan, ',');
-        } else {
-            getline(inFile, language, ',');
-        }
+    string name, language, director, country, description;
+    string yearstr, rat, pop;
+    int year;
+    double rating, popularity;
 
-        getline(inFile, yearstr, ',');
-        // cout << id << " " << name << " " << language << " year:" << yearstr << "." << endl;
-        year = stoi(yearstr);
-        getline(inFile, rat, ',');
-        rating = std::stod(rat);
-        getline(inFile, pop, ',');
-        popularity = std::stod(pop);
+    getline(inFile, name, ',');
 
-        getline(inFile, country, ',');
-        getline(inFile, director, ',');
+    if (inFile.peek() == '"') {
+        getline(inFile, forquote, '"');
+        getline(inFile, language, '"');
+        getline(inFile, description, ',');
+    } else {
+        getline(inFile, language, ',');
+    }
 
-        if (inFile.peek() == '"') {
-            getline(inFile, forquote, '"');
+    getline(inFile, yearstr, ',');
+    cout << id << " " << name << " " << language << " year:" << yearstr << "." << endl;
+    year = stoi(yearstr);
+    getline(inFile, rat, ',');
+    rating = std::stod(rat);
+    getline(inFile, pop, ',');
+    popularity = std::stod(pop);
 
-            while (actor.back() != '"') {
-                getline(inFile, actor, ',');
-                actors.push_back(actor);
-            }
+    getline(inFile, country, ',');
+    getline(inFile, director, ',');
 
-            actor.pop_back();
-            actors.pop_back();
+    if (inFile.peek() == '"') {
+        getline(inFile, forquote, '"');
+
+        while (actor.back() != '"') {
+            getline(inFile, actor, ',');
             actors.push_back(actor);
         }
 
-        if (inFile.peek() == '"') {
-            getline(inFile, forquote, '"');
+        actor.pop_back();
+        actors.pop_back();
+        actors.push_back(actor);
+    }
 
-            while (gen.back() != '"') {
-                getline(inFile, gen, ',');
-                genre.push_back(gen);
-            }
+    if (inFile.peek() == '"') {
+        getline(inFile, forquote, '"');
 
-            gen.pop_back();
-            genre.pop_back(); 
-        } else {
+        while (gen.back() != '"') {
             getline(inFile, gen, ',');
+            genre.push_back(gen);
         }
 
-        genre.push_back(gen);
-
-        getline(inFile, description, '\n');
-        
-        // read data into vertex
-        Vertex v(id, name, language, actors, director, country, genre, year, rating, popularity, description);
-        insertMovieConnection(v);
-
-        i++;
+        gen.pop_back();
+        genre.pop_back(); 
+    } else {
+        getline(inFile, gen, ',');
     }
+
+    genre.push_back(gen);
+
+    getline(inFile, description, '\n');
+    
+    // read data into vertex
+    return Vertex(id, name, language, actors, director, country, genre, year, rating, popularity, description);
 }
 
 void Movies::insertMovieConnection(Vertex v) {
