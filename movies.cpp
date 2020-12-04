@@ -201,6 +201,6 @@ double Movies::calcWeight(Vertex u, Vertex v) {
             }
         }
     }
-    
+
     return 1.0 / double(total_score);
 }
