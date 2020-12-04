@@ -33,7 +33,7 @@ class Edge
     { /* nothing */
     }
 
-    Edge(Vertex u, Vertex v, int w)
+    Edge(Vertex u, Vertex v, double w)
         : source(u), dest(v), label(""), weight(w)
     { /* nothing */
     }
@@ -56,7 +56,7 @@ class Edge
      * @param w - the weight of the edge
      * @param lbl - the edge label
      */
-    Edge(Vertex u, Vertex v, int w, string lbl)
+    Edge(Vertex u, Vertex v, double w, string lbl)
         : source(u), dest(v), label(lbl), weight(w)
     { /* nothing */
     }
@@ -94,7 +94,7 @@ class Edge
     /**
      * Gets edge weight.
      */
-    int getWeight() const
+    double getWeight() const
     {
         return this->weight;
     }
@@ -109,6 +109,6 @@ class Edge
     }
 private:
     string label; /**< The edge label **/
-    int weight; /**< The edge weight (if in a weighed graph) **/
+    double weight; /**< The edge weight (if in a weighed graph) **/
 
 };

@@ -127,6 +127,7 @@ public:
      *         - if Vertex doesn't exist, return false
      */
     bool vertexExists (Vertex v) const;
+    bool vertexExists(string id) const;
 
     /**
      * Checks if edge exists between two vertices exists.
@@ -203,7 +204,7 @@ public:
      * @return - if edge exists, set edge weight and return  edge with new weight
      *         - if not, return InvalidEdge
      */
-    Edge setEdgeWeight(Vertex source, Vertex destination, int weight);
+    Edge setEdgeWeight(Vertex source, Vertex destination, double weight);
 
     /**
      * Creates a name for snapshots of the graph.

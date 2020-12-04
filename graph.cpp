@@ -40,7 +40,7 @@ Graph::Graph(bool weighted, int numVertices, unsigned long seed)
         insertEdge(cur, next);
         if (weighted) 
         {
-            int weight = random.nextInt();
+            double weight = random.nextInt();
             setEdgeWeight(cur, next, weight);
         }
         cur = next;
@@ -156,6 +156,11 @@ vector<Edge> Graph::getEdges() const
 bool Graph::vertexExists(Vertex v) const
 {
     return assertVertexExists(v, "");
+}
+
+bool Graph::vertexExists(string id) const
+{
+    return (adjacency_list.find(Vertex(id)) != adjacency_list.end());
 }
 
 bool Graph::edgeExists(Vertex source, Vertex destination) const
@@ -283,7 +288,7 @@ Edge Graph::removeEdge(Vertex source, Vertex destination)
 }
 
 
-Edge Graph::setEdgeWeight(Vertex source, Vertex destination, int weight)
+Edge Graph::setEdgeWeight(Vertex source, Vertex destination, double weight)
 {
     if (assertEdgeExists(source, destination, __func__) == false)
         return InvalidEdge;
