@@ -25,6 +25,7 @@ Movies::Movies(string file) : g_(true) {
     string forquote;
     vector<string> actors, genre;
     string actor, gen;
+    string lan;
 
     string id, name, language, director, country, description;
     string yearstr, rat, pop;
@@ -46,9 +47,20 @@ Movies::Movies(string file) : g_(true) {
     while (i <= 100 && getline(inFile, id, ',')) {
         actors.clear();
         genre.clear();
+        language.clear();
         getline(inFile, name, ',');
-        getline(inFile, language, ',');
+        if (inFile.peek() == '"') {
+            getline(inFile, forquote, '"');
 
+            while (lan.back() != '"') {
+                getline(inFile, lan, ',');
+                language += lan;
+            }
+            language.pop_back();
+
+        } else{
+            getline(inFile, language, ',');
+        }
         getline(inFile, yearstr, ',');
         year = stoi(yearstr);
         getline(inFile, rat, ',');
@@ -181,9 +193,9 @@ double Movies::calcWeight(Vertex u, Vertex v) {
     if ((abs(u.get_popularity() - v.get_popularity()) <= 10))
         total_score += 10;
 
-    for(auto i = u.get_genre().begin(); i != u.get_genre().end(); i++) {
-        for(auto j = v.get_genre().begin(); j != v.get_genre().end(); j++) {
-            if (*i == *j) {
+    for (string su: u.get_genre()) {
+        for (string sv: v.get_genre()) {
+            if (su == sv) {
                 total_score += 10;
                 return 1.0 / double(total_score);
             }
