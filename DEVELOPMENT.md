@@ -28,6 +28,9 @@ On Nov 18, we explored more options, for example, finding safest path (avoid cri
 
 We've came up with new ideas and discussed about their feasibility. We found [Facebook Large Page-Page Network Dataset](http://snap.stanford.edu/data/facebook-large-page-page-network.html) to be comprehensive: it includes link name and category for each vertex. We also found another idea [Movie Recommender System](https://www.kaggle.com/rounakbanik/movie-recommender-systems) interesting to do, so we cleaned up the data and tried to find a useful weight for this idea.
 
+
+We finalized on doing the movie recommender idea, and started modifying the graph, edge, and vertex classes from lab_ml to better fit our data.
+
 <br />
 
 ### Details (Meeting Notes)
@@ -61,3 +64,18 @@ Listed out Tasks:
     - Determine what the weight would be.
     - What each algorithms can do under these circumstances. 
 
+
+## Week 3 (Nov 29 - Dec 5)
+<br />
+
+### What We Have Done
+
+Completed making graph, edge, and vertex class. Filtered out unuseful datas in the dataset, such as rows that contains blank features, those that has mutiple directors, deleted columns like rate counts and etc. Wrote Makefile, test files, and main.cpp and made it work. Created class movies, which contains the constructor of reading the csv datas into vertices and constructing a graph.
+
+
+<br />
+
+### Details (Meeting Notes)
+---
+
+**Nov 23, 2020**
