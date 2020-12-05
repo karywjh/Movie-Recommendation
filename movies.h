@@ -12,9 +12,6 @@ class Movies {
         Movies(string file); // reads entire file
         Movies(string file, int num); // only reads first (num) numbers of lines
 
-        std::vector<string> a;
-        std::vector<string> b;
-
         /**
          * Returns a constant reference to the state space graph.
          *
@@ -46,8 +43,9 @@ class Movies {
         /**
          * Check Vertex v's similarity with all existing vertices
          * Connect if similarity reaches certain threshold
+         * Output all edges (source, destrination) to output file
          */
-        void insertMovieConnection(Vertex v);
+        void insertMovieConnection(Vertex v, std::ofstream& outFile);
 
         void write_csv(std::string filename, std::vector<std::pair<std::string, std::vector<string>>> dataset);
 

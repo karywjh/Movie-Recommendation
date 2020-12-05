@@ -20,15 +20,14 @@ TEST_CASE("Movies constructor", "[weight=1][part=1]") {
 
   Vertex v3("tt0000010", "Miss Jerry2", "None", vector<string>{"Blanche Bayliss", "William Courtenay", "Chauncey Depew"}, "Alexander Black", "USA", vector<string>{"Crime", "Romance"}, 1894, 5.9, 302.4, "The adventures of a female reporter in the 1890s.");
 
+  Vertex v4("tt0000011", "Miss Jerry3", "None", vector<string>{"Blanche Bayliss", "William Courtenay", "Chauncey Depew"}, "Alexander Black", "USA", vector<string>{"Crime", "Romance"}, 1894, 5.9, 302.4, "The adventures of a female reporter in the 1890s.");
+  
   vertices.push_back(v1);
   vertices.push_back(v2);
   vertices.push_back(v3);
+  vertices.push_back(v4);
 
-  Movies m;
-
-  for (Vertex v : vertices) {
-    m.insertMovieConnection(v);
-  }
+  Movies m(vertices);
 
   // Print textual output of the graph:
   m.getGraph().print();
@@ -44,6 +43,7 @@ TEST_CASE("Movies constructor", "[weight=1][part=1]") {
 
   REQUIRE(!g.edgeExists(v1, v2));
   REQUIRE(g.edgeExists(v1, v3));
+  REQUIRE(g.getEdges().size() == 3);
 }
 
 TEST_CASE("Movies constructor with read small file", "[weight=1][part=1]") {
@@ -58,6 +58,7 @@ TEST_CASE("Movies constructor with read small file", "[weight=1][part=1]") {
   REQUIRE(g.vertexExists("tt0002101"));
   REQUIRE(g.vertexExists("tt0003165"));
   REQUIRE(g.vertexExists("tt0003740"));
+  REQUIRE(g.getEdges().size() == 4);
 }
 
 
@@ -79,4 +80,5 @@ TEST_CASE("Movies constructor with num of lines as arg", "[weight=1][part=1]") {
   // cout << m.getGraph().getVertices().size() << endl;
 
   m.getGraph().print();
+  REQUIRE(m.getGraph().getEdges().size() == 1647);
 }
