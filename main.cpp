@@ -7,7 +7,6 @@ using std::endl;
 using std::cout;
 
 int main() {
-  Movies m;
 
   // Test Vertices ( 1 & 2 similarity = 20) (1 & 3: 100)
   vector<Vertex> vertices;
@@ -17,9 +16,7 @@ int main() {
 
   Vertex v3("tt0000010", "Miss Jerry2", "None", vector<string>{"Blanche Bayliss", "William Courtenay", "Chauncey Depew"}, "Alexander Black", "USA", vector<string>{"Crime", "Romance"}, 1894, 5.9, 302.4, "The adventures of a female reporter in the 1890s.");
 
-  for (Vertex v : vertices) {
-    m.insertMovieConnection(v);
-  }
+  Movies m(vertices);
   
   // Print textual output of the graph:
   m.getGraph().print();
