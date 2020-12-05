@@ -16,6 +16,10 @@ int main() {
 
   Vertex v3("tt0000010", "Miss Jerry2", "None", vector<string>{"Blanche Bayliss", "William Courtenay", "Chauncey Depew"}, "Alexander Black", "USA", vector<string>{"Crime", "Romance"}, 1894, 5.9, 302.4, "The adventures of a female reporter in the 1890s.");
 
+  vertices.push_back(v1);
+  vertices.push_back(v2);
+  vertices.push_back(v3);
+  
   Movies m(vertices);
   
   // Print textual output of the graph:
