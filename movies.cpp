@@ -111,6 +111,10 @@ void Movies::insertMovieConnection(Vertex v) {
                 g_.setEdgeWeight(v, u, weight);
 
                 // Store edge to file
+                string id_v = v.get_id();
+                string id_u = u.get_id();
+                a.push_back(id_v);
+                b.push_back(id_u);
             }
         }
     }
