@@ -21,92 +21,115 @@ Movies::Movies(vector<Vertex> vertices) : g_(true) {
 
 Movies::Movies(string file) : g_(true) {
 
-    // read every line and insert node
-    string forquote;
-    vector<string> actors, genre;
-    string actor, gen;
-
-    string id, name, language, director, country, description;
-    string yearstr, rat, pop;
-    int year;
-    double rating, popularity;
-
     std::ifstream inFile(file);
 
     if (!inFile.is_open())
         throw std::runtime_error("Could not open file");
 
-    string line, c;
-    int nline = 0;
+    string id, placeholder;
+    getline(inFile, placeholder, '\n'); // get rid of first line (title)
 
-    getline(inFile, description, '\n'); // get rid of first line (title)
+    // read every line and insert node
+    while (getline(inFile, id, ',')) {
+        Vertex v = lineToVertex(inFile, id);
+        insertMovieConnection(v);
+    }
+}
+
+Movies::Movies(string file, int num) : g_(true) {
+    std::ifstream inFile(file);
+
+    if (!inFile.is_open())
+        throw std::runtime_error("Could not open file");
+
+    string id, placeholder;
+    getline(inFile, placeholder, '\n'); // get rid of first line (title)
+
     int i = 0;
+    // Limited to num lines of data
+    while (i < num && getline(inFile, id, ',')) {
+        Vertex v = lineToVertex(inFile, id);
+        insertMovieConnection(v);
+        i++;
+    }
+}
 
-    // Limited to 100 data, TBC
-    while (i <= 100 && getline(inFile, id, ',')) {
-        actors.clear();
-        genre.clear();
-        getline(inFile, name, ',');
+Vertex Movies::lineToVertex(std::ifstream& inFile, string id) {
+    string forquote;
+    vector<string> actors, genre;
+    string actor, gen;
+
+    string name, language, director, country, description;
+    string yearstr, rat, pop;
+    int year;
+    double rating, popularity;
+
+    getline(inFile, name, ',');
+
+    if (inFile.peek() == '"') {
+        getline(inFile, forquote, '"');
+        getline(inFile, language, '"');
+        getline(inFile, description, ',');
+    } else {
         getline(inFile, language, ',');
+    }
 
-        getline(inFile, yearstr, ',');
-        year = stoi(yearstr);
-        getline(inFile, rat, ',');
-        rating = std::stod(rat);
-        getline(inFile, pop, ',');
-        popularity = std::stod(pop);
+    getline(inFile, yearstr, ',');
+    cout << id << " " << name << " " << language << " year:" << yearstr << "." << endl;
+    year = stoi(yearstr);
+    getline(inFile, rat, ',');
+    rating = std::stod(rat);
+    getline(inFile, pop, ',');
+    popularity = std::stod(pop);
 
-        getline(inFile, country, ',');
-        getline(inFile, director, ',');
+    getline(inFile, country, ',');
+    getline(inFile, director, ',');
 
-        if (inFile.peek() == '"') {
-            getline(inFile, forquote, '"');
+    if (inFile.peek() == '"') {
+        getline(inFile, forquote, '"');
 
-            while (actor.back() != '"') {
-                getline(inFile, actor, ',');
-                actors.push_back(actor);
-            }
-
-            actor.pop_back();
-            actors.pop_back();
+        while (actor.back() != '"') {
+            getline(inFile, actor, ',');
             actors.push_back(actor);
         }
 
-        if (inFile.peek() == '"') {
-            getline(inFile, forquote, '"');
+        actor.pop_back();
+        actors.pop_back();
+        actors.push_back(actor);
+    }
 
-            while (gen.back() != '"') {
-                getline(inFile, gen, ',');
-                genre.push_back(gen);
-            }
+    if (inFile.peek() == '"') {
+        getline(inFile, forquote, '"');
 
-            gen.pop_back();
-            genre.pop_back(); 
-        } else {
+        while (gen.back() != '"') {
             getline(inFile, gen, ',');
+            genre.push_back(gen);
         }
 
-        genre.push_back(gen);
-
-        getline(inFile, description, '\n');
-        
-        // read data into vertex
-        Vertex v(id, name, language, actors, director, country, genre, year, rating, popularity, description);
-        insertMovieConnection(v);
-
-        i++;
+        gen.pop_back();
+        genre.pop_back(); 
+    } else {
+        getline(inFile, gen, ',');
     }
+
+    genre.push_back(gen);
+
+    getline(inFile, description, '\n');
+    
+    // read data into vertex
+    return Vertex(id, name, language, actors, director, country, genre, year, rating, popularity, description);
 }
 
 void Movies::insertMovieConnection(Vertex v) {
     // Connect it with other vertices
     g_.insertVertex(v);
+    // cout << v.get_id() << " " << v.get_name() << endl;
 
     for (Vertex u: g_.getVertices()) {
         if (v != u) {
             double weight = calcWeight(v, u);
-            // Connect if similarity >= 30 (weight <= 1/30)
-            if (weight <= (1.0 / 30)) {
+            // Connect if similarity >= 40 (weight <= 1/40)
+            if (weight <= (1.0 / 40)) {
                 g_.insertEdge(v, u);
                 g_.setEdgeWeight(v, u, weight);
 
@@ -118,7 +141,24 @@ void Movies::insertMovieConnection(Vertex v) {
             }
         }
     }
+}
 
+void Movies::write_csv(std::string filename, std::vector<std::pair<std::string, std::vector<string>>> dataset){
+    std::ofstream myFile(filename);
+    for(unsigned j = 0; j < dataset.size(); ++j) {
+        myFile << dataset.at(j).first;
+        if(j != dataset.size() - 1) myFile << ",";\
+    }
+    myFile << "\n";
+    for(unsigned i = 0; i < dataset.at(0).second.size(); ++i) {
+        for(unsigned j = 0; j < dataset.size(); ++j)
+        {
+            myFile << dataset.at(j).second.at(i);
+            if(j != dataset.size() - 1) myFile << ",";
+        }
+        myFile << "\n";
+    }
+    myFile.close();
 }
 
 void Movies::BFS(Graph G) {
@@ -163,9 +203,9 @@ void Movies::BFS(Graph G, Vertex v) {
  * Country:     bool  10
  * Year:    dif <= 5  10
  * Genre:       bool  10
- * Avg_vote: dif <= 2 10
+ * Popularity: dif <= 10 10
  * 
- * Connect Score >= 30 (weight <= 1/30)
+ * Connect Score >= 40 (weight <= 1/40)
  */
 double Movies::calcWeight(Vertex u, Vertex v) {
     int total_score = 0;
@@ -185,14 +225,14 @@ double Movies::calcWeight(Vertex u, Vertex v) {
     if ((abs(u.get_popularity() - v.get_popularity()) <= 10))
         total_score += 10;
 
-    for(auto i = u.get_genre().begin(); i != u.get_genre().end(); i++) {
-        for(auto j = v.get_genre().begin(); j != v.get_genre().end(); j++) {
-            if (*i == *j) {
+    for (string su: u.get_genre()) {
+        for (string sv: v.get_genre()) {
+            if (su == sv) {
                 total_score += 10;
                 return 1.0 / double(total_score);
             }
         }
     }
-    
+
     return 1.0 / double(total_score);
 }
