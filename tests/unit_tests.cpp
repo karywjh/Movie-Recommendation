@@ -46,7 +46,7 @@ TEST_CASE("Movies constructor", "[weight=1][part=1]") {
   REQUIRE(g.edgeExists(v1, v3));
 }
 
-TEST_CASE("Movies constructor with read small file", "[weight=1][part=1]") {
+TEST_CASE("Movies constructor with read file", "[weight=1][part=1]") {
   Movies m("tests/Test_Small.csv");
   m.getGraph().print();
 
@@ -58,25 +58,4 @@ TEST_CASE("Movies constructor with read small file", "[weight=1][part=1]") {
   REQUIRE(g.vertexExists("tt0002101"));
   REQUIRE(g.vertexExists("tt0003165"));
   REQUIRE(g.vertexExists("tt0003740"));
-}
-
-
-// TEST_CASE("Movies constructor with read entire file", "[weight=1][part=1]") {
-//   Movies m("IMDb moviesCSV.csv");
-//   // for (Vertex v : m.getGraph().getVertices()) {
-//   //   cout << v.get_id() << " " << v.get_name() << endl;
-//   // }
-//   // cout << m.getGraph().getVertices().size() << endl;
-
-//   m.getGraph().print();
-// }
-
-TEST_CASE("Movies constructor with num of lines as arg", "[weight=1][part=1]") {
-  Movies m("IMDb moviesCSV.csv", 500);
-  // for (Vertex v : m.getGraph().getVertices()) {
-  //   cout << v.get_id() << " " << v.get_name() << endl;
-  // }
-  // cout << m.getGraph().getVertices().size() << endl;
-
-  m.getGraph().print();
 }
