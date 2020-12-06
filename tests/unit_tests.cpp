@@ -82,3 +82,108 @@ TEST_CASE("Movies constructor with num of lines as arg", "[weight=1][part=1]") {
   m.getGraph().print();
   REQUIRE(m.getGraph().getEdges().size() == 1647);
 }
+
+TEST_CASE("BFS traversal works correctly with 3 vertices; depth 1", "[weight=1][part=2]") {
+  Graph g(true, false);
+  Vertex v1("A");
+  Vertex v2("B");
+  Vertex v3("C");
+  g.insertVertex(v3);
+  g.insertVertex(v2);
+  g.insertVertex(v1);
+  g.insertEdge(v1, v2);
+  g.insertEdge(v1, v3);
+  Movies m(&g);
+  vector<string> solution = {"A", "C", "B"};
+  REQUIRE(m.BFS() == solution);
+}
+
+TEST_CASE("BFS traversal works correctly with 6 vertices; depth 2", "[weight=1][part=2]") {
+  Graph g(true, false);
+  Vertex v1("A");
+  Vertex v2("B");
+  Vertex v3("C");
+  Vertex v4("D");
+  Vertex v5("E");
+  Vertex v6("F");
+  g.insertVertex(v6);
+  g.insertVertex(v5);
+  g.insertVertex(v4);
+  g.insertVertex(v3);
+  g.insertVertex(v2);
+  g.insertVertex(v1);
+  g.insertEdge(v1, v2);
+  g.insertEdge(v1, v3);
+  g.insertEdge(v1, v4);
+  g.insertEdge(v2, v5);
+  g.insertEdge(v2, v6);
+  Movies m(&g);
+  vector<string> solution = {"B", "F", "E", "A", "D", "C"};
+  REQUIRE(m.BFS() == solution);
+}
+
+TEST_CASE("BFS traversal works correctly with 8 vertices; depth 3", "[weight=1][part=2]") {
+  Graph g(true, false);
+  Vertex v1("A");
+  Vertex v2("B");
+  Vertex v3("C");
+  Vertex v4("D");
+  Vertex v5("E");
+  Vertex v6("F");
+  Vertex v7("G");
+  Vertex v8("H");
+  g.insertVertex(v8);
+  g.insertVertex(v7);
+  g.insertVertex(v6);
+  g.insertVertex(v5);
+  g.insertVertex(v4);
+  g.insertVertex(v3);
+  g.insertVertex(v2);
+  g.insertVertex(v1);
+  g.insertEdge(v1, v2);
+  g.insertEdge(v1, v3);
+  g.insertEdge(v1, v4);
+  g.insertEdge(v3, v5);
+  g.insertEdge(v3, v6);
+  g.insertEdge(v5, v7);
+  g.insertEdge(v4, v8);
+  Movies m(&g);
+  vector<string> solution = {"B", "A", "D", "C", "H", "F", "E", "G"};
+  REQUIRE(m.BFS() == solution);
+}
+
+TEST_CASE("BFS traversal works correctly with 10 vertices; depth 4", "[weight=1][part=2]") {
+  Graph g(true, false);
+  Vertex v1("A");
+  Vertex v2("B");
+  Vertex v3("C");
+  Vertex v4("D");
+  Vertex v5("E");
+  Vertex v6("F");
+  Vertex v7("G");
+  Vertex v8("H");
+  Vertex v9("I");
+  Vertex v10("J");
+  g.insertVertex(v10);
+  g.insertVertex(v9);
+  g.insertVertex(v8);
+  g.insertVertex(v7);
+  g.insertVertex(v6);
+  g.insertVertex(v5);
+  g.insertVertex(v4);
+  g.insertVertex(v3);
+  g.insertVertex(v2);
+  g.insertVertex(v1);
+  g.insertEdge(v1, v2);
+  g.insertEdge(v1, v3);
+  g.insertEdge(v1, v4);
+  g.insertEdge(v3, v5);
+  g.insertEdge(v3, v6);
+  g.insertEdge(v5, v7);
+  g.insertEdge(v4, v8);
+  g.insertEdge(v7, v9);
+  g.insertEdge(v7, v10);
+  Movies m(&g);
+  vector<string> solution = {"B", "A", "D", "C", "H", "F", "E", "G", "J", "I"};
+  REQUIRE(m.BFS() == solution);
+}

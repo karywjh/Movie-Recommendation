@@ -73,6 +73,20 @@ Graph::Graph(bool weighted, int numVertices, unsigned long seed)
     }
 }
 
+Graph::Graph(const Graph& g): adjacency_list(g.adjacency_list), weighted(g.weighted),directed(g.directed),random(g.random), picNum(g.picNum), picName(g.picName) {
+
+}
+
+Graph& Graph::operator=(const Graph& g) {
+    weighted = g.weighted;
+    directed = g.directed;
+    random = g.random;
+    picNum = g.picNum;
+    picName = g.picName;
+    adjacency_list = g.adjacency_list;
+    return *this;
+}
+
 bool Graph::isEmpty() const {
     return adjacency_list.empty();
 }
@@ -189,7 +203,7 @@ string Graph::getEdgeLabel(Vertex source, Vertex destination) const
 {
     if(assertEdgeExists(source, destination, __func__) == false)
         return InvalidLabel;
-    return adjacency_list[source][destination].getLabel();
+    return adjacency_list[source][destination].get_label();
 }
 
 int Graph::getEdgeWeight(Vertex source, Vertex destination) const
@@ -294,12 +308,12 @@ Edge Graph::setEdgeWeight(Vertex source, Vertex destination, double weight)
         return InvalidEdge;
     Edge e = adjacency_list[source][destination];
     //std::cout << "setting weight: " << weight << std::endl;
-    Edge new_edge(source, destination, weight, e.getLabel());
+    Edge new_edge(source, destination, weight, e.get_label());
     adjacency_list[source][destination] = new_edge;
 
     if(!directed)
         {
-            Edge new_edge_reverse(destination,source, weight, e.getLabel());
+            Edge new_edge_reverse(destination,source, weight, e.get_label());
             adjacency_list[destination][source] = new_edge_reverse;
         }
 
@@ -401,7 +415,7 @@ void Graph::print() const
             string vertexColumn = "    => " + ss.str();
             vertexColumn += " " ;
             cout << std::left << std::setw(26) << vertexColumn;
-            string edgeColumn = "edge label = \"" + it2->second.getLabel()+ "\"";
+            string edgeColumn = "edge label = \"" + it2->second.get_label()+ "\"";
             cout << std::left << std::setw(26) << edgeColumn;
             if (weighted)
                 cout << "weight = " << it2->second.getWeight();
@@ -476,7 +490,7 @@ void Graph::savePNG(string title) const
             neatoFile << vertex2Text;
             neatoFile << "\"";
 
-            string edgeLabel = it2->second.getLabel();
+            string edgeLabel = it2->second.get_label();
             if (edgeLabel == "WIN") {
                 neatoFile << "[color=\"blue\"]";
             } else if (edgeLabel == "LOSE") {

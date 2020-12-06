@@ -2,6 +2,7 @@
 #include <queue>
 #include <iostream>
 #include <sstream>
+#include <map>
 
 using std::string;
 using std::queue;
@@ -11,6 +12,10 @@ using std::quoted;
 
 Movies::Movies() : g_(true) {
 
+}
+
+Movies::Movies(const Graph* g) : g_(true) {
+    g_ = *g;
 }
 
 Movies::Movies(vector<Vertex> vertices) : g_(true) {
@@ -171,37 +176,41 @@ void Movies::write_csv(std::string filename, std::vector<std::pair<std::string, 
     myFile.close();
 }
 
-void Movies::BFS(Graph G) {
-    for(Vertex v: G.getVertices()) {
-        v.set_label("UNEXPLORED");
+vector<string> Movies::BFS() {
+    Graph g = g_;
+    vector<string> ids;
+    for(Vertex v: g.getVertices()) {
+        map[v] = "UNEXPLORED";
     }
-    for(Edge e: G.getEdges()) {
-        e.setLabel("UNEXPLORED");
+    for(Edge e: g.getEdges()) {
+        g.setEdgeLabel(e.source, e.dest, "UNEXPLORED");
     }
-    for(Vertex v: G.getVertices()) {
-        if(v.get_label() == "UNEXPLORED") {
-            BFS(G, v);
+    for(Vertex v: g.getVertices()) {
+        if(map[v] == "UNEXPLORED") {
+            BFS(&g, v, ids);
         }
     }
+    map.clear();
+    return ids;
 }
 
-void Movies::BFS(Graph G, Vertex v) {
+void Movies::BFS(Graph* G, Vertex v, vector<string>& ids) {
     queue<Vertex> q;
-    v.set_label("VISITED");
+    map[v] = "VISITED";
     q.push(v);
 
     while(!q.empty()) {
-        v = q.back();
-        cout << "name: " << v.get_name() << " Description: " << v.get_description() << endl;
+        v = q.front();
+        ids.push_back(v.get_id());
         q.pop();
-        for(Vertex w: G.getAdjacent(v)) {
-            if(w.get_label() == "UNEXPLORED") {
-                G.setEdgeLabel(v, w, "DISCOVERY");
-                w.set_label("VISITED");
+        for(Vertex w: G->getAdjacent(v)) {
+            if(map[w] == "UNEXPLORED") {
+                G->setEdgeLabel(v, w, "DISCOVERY");
+                map[w] = "VISITED";
                 q.push(w);
             }
-            else if(G.getEdge(v, w).getLabel() == "UNEXPLORED") {
-                G.setEdgeLabel(v, w, "CROSS");
+            else if(G->getEdgeLabel(v, w) == "UNEXPLORED") {
+                G->setEdgeLabel(v, w, "CROSS");
             }
         }
     }

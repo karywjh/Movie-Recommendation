@@ -82,12 +82,12 @@ class Edge
     /**
      * Gets edge label.
      */
-    string getLabel() const
+    string get_label() const
     {
-        return this->label;
+        return label;
     }
 
-    void setLabel(string label_) {
+    void set_label(string label_) {
         label = label_;
     }
 

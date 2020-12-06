@@ -33,7 +33,6 @@ class Vertex {
         
         // Label used in traversals
         string get_label() const {return label_;}
-        void set_label(string label) {label_ = label;}
 
         // Operators
         bool operator==(const Vertex& v) const { return id_ == v.id_; }

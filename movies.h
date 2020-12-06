@@ -8,6 +8,7 @@ class Movies {
     public:
 
         Movies();
+        Movies(const Graph*);
         Movies(vector<Vertex> vertices);
         Movies(string file); // reads entire file
         Movies(string file, int num); // only reads first (num) numbers of lines
@@ -19,9 +20,9 @@ class Movies {
          */
         const Graph & getGraph() const { return g_; }
 
-        void BFS(Graph);
+        vector<string> BFS();
 
-        void BFS(Graph, Vertex);
+        void BFS(Graph*, Vertex, vector<string>&);
 
         /**
          * Actor:       bool  30
@@ -51,4 +52,5 @@ class Movies {
 
     private:
         Graph g_;
+        unordered_map<Vertex, string, MyHash> map;
 };
