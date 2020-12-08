@@ -255,3 +255,50 @@ double Movies::calcWeight(Vertex u, Vertex v) {
 
     return 1.0 / double(total_score);
 }
+
+vector<Vertex> Movies::shortestPath(Graph G, Vertex s) {
+    unordered_map<Vertex, int, MyHash> d;
+    unordered_map<Vertex, Vertex, MyHash> p;
+    auto compare = [&](Vertex& v1, Vertex& v2) {return d[v1] > d[v2];};
+    for(Vertex v: G.getVertices()) {
+        d[v] = INT_MAX;
+        p[v] = Vertex();
+    }
+    d[s] = 0;
+    std::priority_queue<Vertex, vector<Vertex>, decltype(compare)> Q(compare);
+    for(Vertex v: G.getVertices()) {
+        Q.push(v);
+    }
+    Graph T(true, false);
+    for(size_t i = 0; i < Q.size(); i++) {
+        Vertex u = Q.top();
+        Q.pop();
+        T.insertVertex(u);
+        for(Vertex v: G.getAdjacent(u)) {
+            if(T.vertexExists(v))
+                continue;
+            if((d[u] + G.getEdgeWeight(u, v)) < d[v]) {
+                d[v] = d[u] + G.getEdgeWeight(u, v);
+                p[v] = u;
+            }
+        }
+    }
+    vector<Vertex> neighbors = G.getAdjacent(s);
+    Vertex destination;
+    int min = INT_MAX;
+    for(auto it = d.begin(); it != d.end(); it++) {
+        if(std::find(neighbors.begin(), neighbors.end(), it->first) != neighbors.end())
+            continue;
+        if(it->second < min) {
+            min = it->second;
+            destination = it->first;
+        }
+    }
+    vector<Vertex> recommendations;
+    Vertex pre = p[destination];
+    while(pre != Vertex()) {
+        recommendations.push_back(pre);
+        pre = p[pre];
+    } 
+    return recommendations;
+}
