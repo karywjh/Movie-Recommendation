@@ -3,12 +3,16 @@
 #include <iostream>
 #include <sstream>
 #include <map>
+#include <algorithm>
 
 using std::string;
 using std::queue;
 using std::cout;
 using std::endl;
 using std::quoted;
+using std::make_heap;
+using std::push_heap;
+using std::pop_heap;
 
 Movies::Movies() : g_(true) {
 
@@ -228,22 +232,16 @@ void Movies::BFS(Graph* G, Vertex v, vector<string>& ids) {
  */
 double Movies::calcWeight(Vertex u, Vertex v) {
     int total_score = 0;
-
     if ((u.get_actor() == v.get_actor()))
         total_score += 30;
-
     if (u.get_director() == v.get_director())
         total_score += 30;
-
     if ((u.get_country() == v.get_country()))
         total_score += 10;
-
     if ((abs(u.get_year() - v.get_year()) <= 5))
         total_score += 10;
-
     if ((abs(u.get_popularity() - v.get_popularity()) <= 10))
         total_score += 10;
-
     for (string su: u.get_genre()) {
         for (string sv: v.get_genre()) {
             if (su == sv) {
@@ -256,38 +254,42 @@ double Movies::calcWeight(Vertex u, Vertex v) {
     return 1.0 / double(total_score);
 }
 
-vector<Vertex> Movies::shortestPath(Graph G, Vertex s) {
-    unordered_map<Vertex, int, MyHash> d;
+vector<Vertex> Movies::shortestPath(Vertex s) {
+    unordered_map<Vertex, double, MyHash> d;
     unordered_map<Vertex, Vertex, MyHash> p;
     auto compare = [&](Vertex& v1, Vertex& v2) {return d[v1] > d[v2];};
-    for(Vertex v: G.getVertices()) {
+    for(Vertex v: g_.getVertices()) {
         d[v] = INT_MAX;
         p[v] = Vertex();
     }
     d[s] = 0;
-    std::priority_queue<Vertex, vector<Vertex>, decltype(compare)> Q(compare);
-    for(Vertex v: G.getVertices()) {
-        Q.push(v);
+    vector<Vertex> Q;
+    for(Vertex v: g_.getVertices()) {
+        Q.push_back(v);
+        push_heap(Q.begin(),Q.end(), compare);
     }
+    make_heap(Q.begin(),Q.end(),compare);
     Graph T(true, false);
-    for(size_t i = 0; i < Q.size(); i++) {
-        Vertex u = Q.top();
-        Q.pop();
+    while (!Q.empty()) {
+        Vertex u = Q.front();
+        pop_heap(Q.begin(), Q.end(), compare);
+        Q.pop_back();
         T.insertVertex(u);
-        for(Vertex v: G.getAdjacent(u)) {
+        for(Vertex v: g_.getAdjacent(u)) {
             if(T.vertexExists(v))
                 continue;
-            if((d[u] + G.getEdgeWeight(u, v)) < d[v]) {
-                d[v] = d[u] + G.getEdgeWeight(u, v);
+            if((d[u] + g_.getEdge(u, v).getWeight()) < d[v]) {
+                d[v] = d[u] + g_.getEdge(u, v).getWeight();
                 p[v] = u;
+                make_heap(Q.begin(),Q.end(),compare);
             }
         }
     }
-    vector<Vertex> neighbors = G.getAdjacent(s);
+    vector<Vertex> neighbors = g_.getAdjacent(s);
     Vertex destination;
-    int min = INT_MAX;
+    double min = INT_MAX;
     for(auto it = d.begin(); it != d.end(); it++) {
-        if(std::find(neighbors.begin(), neighbors.end(), it->first) != neighbors.end())
+        if(std::find(neighbors.begin(), neighbors.end(), it->first) != neighbors.end() || it->first == s)
             continue;
         if(it->second < min) {
             min = it->second;
@@ -296,7 +298,7 @@ vector<Vertex> Movies::shortestPath(Graph G, Vertex s) {
     }
     vector<Vertex> recommendations;
     Vertex pre = p[destination];
-    while(pre != Vertex()) {
+    while(pre != Vertex() && pre != s) {
         recommendations.push_back(pre);
         pre = p[pre];
     } 

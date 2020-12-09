@@ -24,7 +24,7 @@ class Movies {
 
         void BFS(Graph*, Vertex, vector<string>&);
 
-        vector<Vertex> shortestPath(Graph, Vertex);
+        vector<Vertex> shortestPath(Vertex);
 
         /**
          * Actor:       bool  30
