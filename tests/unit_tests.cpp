@@ -92,7 +92,6 @@ TEST_CASE("Movies constructor with edge file as arg (small dataset)", "[weight=1
 }
 
 TEST_CASE("Movies constructor with edge file as arg (500 lines)", "[weight=1][part=1]") {
-  Movies t("IMDb moviesCSV.csv", "out500.csv", 500);
   Movies m("IMDb moviesCSV.csv", "out500.csv", 500, true);
 
   m.getGraph().print();
@@ -102,13 +101,10 @@ TEST_CASE("Movies constructor with edge file as arg (500 lines)", "[weight=1][pa
 TEST_CASE("Movies constructor with edge file as arg (3000 lines)", "[weight=1][part=1]") {
   clock_t tStart = clock();
     
-  // Movies t("IMDb moviesCSV.csv", "out3000.csv", 3000);
   Movies m("IMDb moviesCSV.csv", "out3000.csv", 3000, true);
-
   m.getGraph().print();
 
   printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
-
   REQUIRE(m.getGraph().getEdges().size() == 33207);
 }
 
@@ -377,4 +373,14 @@ TEST_CASE("shortest path works with a small dataset", "[weight=1][part=3]") {
   m.getGraph().print();
   // cout << "Begin is: " << m.getGraph().getVertices().begin()->get_name() << endl;
   cout << result.size() << endl;
+}
+
+TEST_CASE("shortest path with 3000 vertices", "[weight=1][part=3]") {
+  Movies m("IMDb moviesCSV.csv", "out3000.csv", 3000, true);
+  vector<Vertex> result = m.shortestPath(Vertex("tt0010162"));
+  cout << result.size() << endl;
+
+  for (Vertex v : result) {
+    cout << v.get_id() << ": " << v.get_name() << " similarity: " << (1.0 / m.getGraph().getEdgeWeight(Vertex("tt0010162"), v)) << endl;
+  }
 }
