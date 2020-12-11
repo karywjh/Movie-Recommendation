@@ -40,15 +40,15 @@ make final_project
 ./final_project constructor              // construct graph with 3000 vertices
 ./final_project constructor num_vertices // Replace num_vertices with an int to specify how many vertices you want in the graph (run with original csv -- will be slow)
 
-// replace edgefile_name with out500.csv out3000.csv or out10000.csv; replace num_vertices with corresponding int
+// replace edgefile_name with dataset/out500.csv dataset/out3000.csv or dataset/out10000.csv; replace num_vertices with corresponding int
 // Edge connection file is already been made for 500, 3000, and 10000 vertices dataset so runtime will be fast
 ./final_project constructor edgefile_name num_vertices
 
 // You can add print to the end of any of these commands to print out the connections between movies
 
  // example:
-./final_project constructor out500.csv 500
-./final_project constructor out500.csv 500 print
+./final_project constructor dataset/out500.csv 500
+./final_project constructor dataset/out500.csv 500 print
 ```
 
 **To get a sense of our algorithm optimization on constructing the graph:**
@@ -56,6 +56,6 @@ make final_project
 make final_project
 ./final_project 10000 false // Slow: Using original dataset to read in 10000 vertices and making the graph, output the edge connection in output.csv
 
-./final_project 10000 true  // Fast: Using premade edge connection file (out10000.csv) to build the graph with 10000 vertices
+./final_project 10000 true  // Fast: Using premade edge connection file (dataset/out10000.csv) to build the graph with 10000 vertices
 ``` 
 
