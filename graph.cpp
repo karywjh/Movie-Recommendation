@@ -417,9 +417,7 @@ void Graph::print() const
             ss << it2->first.get_id() << ": " << it2->first.get_name(); 
             string vertexColumn = "    => " + ss.str();
             vertexColumn += " " ;
-            cout << std::left << std::setw(26) << vertexColumn;
-            string edgeColumn = "edge label = \"" + it2->second.get_label()+ "\"";
-            cout << std::left << std::setw(26) << edgeColumn;
+            cout << std::left << std::setw(60) << vertexColumn;
             if (weighted)
                 cout << "weight = " << it2->second.getWeight();
             cout << endl;
