@@ -73,7 +73,7 @@ TEST_CASE("Movies constructor with read small file", "[weight=1][part=1]") {
 // }
 
 TEST_CASE("Movies constructor with num of lines as arg", "[weight=1][part=1]") {
-  Movies m("IMDb moviesCSV.csv", "out500.csv", 500);
+  Movies m("dataset/IMDb moviesCSV.csv", "dataset/out500.csv", 500);
   // for (Vertex v : m.getGraph().getVertices()) {
   //   cout << v.get_id() << " " << v.get_name() << endl;
   // }
@@ -92,7 +92,7 @@ TEST_CASE("Movies constructor with edge file as arg (small dataset)", "[weight=1
 }
 
 TEST_CASE("Movies constructor with edge file as arg (500 lines)", "[weight=1][part=1]") {
-  Movies m("IMDb moviesCSV.csv", "out500.csv", 500, true);
+  Movies m("dataset/IMDb moviesCSV.csv", "dataset/out500.csv", 500, true);
 
   m.getGraph().print();
   REQUIRE(m.getGraph().getEdges().size() == 1647);
@@ -101,7 +101,7 @@ TEST_CASE("Movies constructor with edge file as arg (500 lines)", "[weight=1][pa
 TEST_CASE("Movies constructor with edge file as arg (3000 lines)", "[weight=1][part=1]") {
   clock_t tStart = clock();
     
-  Movies m("IMDb moviesCSV.csv", "out3000.csv", 3000, true);
+  Movies m("dataset/IMDb moviesCSV.csv", "dataset/out3000.csv", 3000, true);
   m.getGraph().print();
 
   printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
@@ -225,8 +225,8 @@ TEST_CASE("shortest path works with 2 nodes one edge", "[weight=1][part=3]") {
   g.insertEdge(v1, v2);
   g.setEdgeWeight(v1, v2, 1.0/2);
   Movies m(&g);
-  vector<Vertex> solution_1 = {v2};
-  vector<Vertex> solution_2 = {v1};
+  vector<Vertex> solution_1 = {v1, v2};
+  vector<Vertex> solution_2 = {v2, v1};
   REQUIRE(m.getShortestPath(v1) == solution_1);
   REQUIRE(m.getShortestPath(v2) == solution_2);
   cout << endl;
@@ -247,9 +247,9 @@ TEST_CASE("shortest path works with triangle", "[weight=1][part=3]") {
   g.setEdgeWeight(v1, v3, 1.0/3);
   g.setEdgeWeight(v2, v3, 1.0/4);
   Movies m(&g);
-  vector<Vertex> solution_1 = {v3};
-  vector<Vertex> solution_2 = {v3};
-  vector<Vertex> solution_3 = {v2};
+  vector<Vertex> solution_1 = {v1, v3};
+  vector<Vertex> solution_2 = {v2, v3};
+  vector<Vertex> solution_3 = {v3, v2};
   REQUIRE(m.getShortestPath(v1) == solution_1);
   REQUIRE(m.getShortestPath(v2) == solution_2);
   REQUIRE(m.getShortestPath(v3) == solution_3);
@@ -276,7 +276,7 @@ TEST_CASE("shortest path works with triangle plus one more edge", "[weight=1][pa
   g.setEdgeWeight(v2, v4, 1.0/5);
   Movies m(&g);
   vector<Vertex> solution_1 = {v1, v2, v4};
-  vector<Vertex> solution_2 = {v4};
+  vector<Vertex> solution_2 = {v2, v4};
   vector<Vertex> solution_3 = {v3, v2, v4};
   vector<Vertex> solution_4 = {v4, v2, v3};
   REQUIRE(m.getShortestPath(v1) == solution_1);
@@ -382,7 +382,7 @@ TEST_CASE("shortest path works with a small dataset", "[weight=1][part=3]") {
 }
 
 TEST_CASE("shortest path with 3000 vertices", "[weight=1][part=3]") {
-  Movies m("IMDb moviesCSV.csv", "out3000.csv", 3000, true);
+  Movies m("dataset/IMDb moviesCSV.csv", "dataset/out3000.csv", 3000, true);
   vector<Vertex> result = m.getShortestPath(Vertex("tt0010162"));
   cout << result.size() << endl;
 
@@ -449,8 +449,8 @@ TEST_CASE("graph coloring works with 10 vertices complex graph", "[weight=1][par
 }
 
 TEST_CASE("greedy coloring works with edge file as arg (500 lines)", "[weight=1][part=4]") {
-  Movies m("IMDb moviesCSV.csv", "out500.csv", 500, true);
-  Movies t("IMDb moviesCSV.csv", "out3000.csv", 3000, true);
+  Movies m("dataset/IMDb moviesCSV.csv", "dataset/out500.csv", 500, true);
+  Movies t("dataset/IMDb moviesCSV.csv", "dataset/out3000.csv", 3000, true);
   int solution_1 = 20;
   int solution_2 = 43;
   REQUIRE(m.greedyColoring() == solution_1);

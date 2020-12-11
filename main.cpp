@@ -27,20 +27,20 @@ int main(int argc, char** argv) {
 
   // default if no arguments are passed
   if (argc == 1) {
-    Movies m("IMDb moviesCSV.csv", "out3000.csv", 3000, true);
+    Movies m("dataset/IMDb moviesCSV.csv", "dataset/out3000.csv", 3000, true);
     cout << "Constructed graph with 3000 vertices" << endl;
   }
 
   // Run Graph Coloring
   else if (strcmp(argv[1], "coloring") == 0) {
-    Movies m("IMDb moviesCSV.csv", "out3000.csv", 3000, true);
+    Movies m("dataset/IMDb moviesCSV.csv", "dataset/out3000.csv", 3000, true);
     cout << "Constructed graph with 3000 vertices" << endl;
     cout << "Requires " << m.greedyColoring() << " colors" << endl;
   }
 
   // Run BFS
   else if (strcmp(argv[1], "BFS") == 0) {
-    Movies m("IMDb moviesCSV.csv", "out3000.csv", 3000, true);
+    Movies m("dataset/IMDb moviesCSV.csv", "dataset/out3000.csv", 3000, true);
     vector<Vertex> vector = m.BFS();
 
     // print all Movies names
@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
 
   // Run Shortest Path
   else if (strcmp(argv[1], "shortestpath") == 0) {
-    Movies m("IMDb moviesCSV.csv", "out3000.csv", 3000, true);
+    Movies m("dataset/IMDb moviesCSV.csv", "dataset/out3000.csv", 3000, true);
     vector<Vertex> vector;
 
     // Run with default source vertex
@@ -92,7 +92,7 @@ int main(int argc, char** argv) {
   else if (strcmp(argv[1], "constructor") == 0) {
     try {
       if (argc == 2 || (argc == 3 && strcmp(argv[2], "print") == 0)) {
-        Movies m("IMDb moviesCSV.csv", "out3000.csv", 3000, true);
+        Movies m("dataset/IMDb moviesCSV.csv", "dataset/out3000.csv", 3000, true);
         if (argc == 3 && strcmp(argv[2], "print") == 0)
           m.getGraph().print();
 
@@ -100,7 +100,7 @@ int main(int argc, char** argv) {
       }
 
       else if (argc == 3 || (argc == 4 && strcmp(argv[3], "print") == 0)) {
-        Movies m("IMDb moviesCSV.csv", "output.csv", std::stoi(argv[2]));
+        Movies m("dataset/IMDb moviesCSV.csv", "output.csv", std::stoi(argv[2]));
         if (argc == 4 && strcmp(argv[3], "print") == 0)
           m.getGraph().print();
 
@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
       }
 
       else if (argc == 4 || (argc == 5 && strcmp(argv[4], "print") == 0)) {
-        Movies m("IMDb moviesCSV.csv", argv[2], std::stoi(argv[3]), true);
+        Movies m("dataset/IMDb moviesCSV.csv", argv[2], std::stoi(argv[3]), true);
         if (argc == 5 && strcmp(argv[4], "print") == 0)
           m.getGraph().print();
 
@@ -126,10 +126,10 @@ int main(int argc, char** argv) {
   // Run 10000 data constructor (show difference b/w reading orig file vs. edge file)
   else if (strcmp(argv[1], "10000") == 0) {
     if (argc == 3 && strcmp(argv[2], "true") == 0) {
-      Movies m("new_movies.csv", "out10000.csv", true);
+      Movies m("dataset/new_movies.csv", "dataset/out10000.csv", true);
       cout << "Constructed graph with 10000 vertices using edge connection dataset (fast)" << endl;
     } else if (argc == 3 && strcmp(argv[2], "false") == 0) {
-      Movies m("new_movies.csv", "output.csv");
+      Movies m("dataset/new_movies.csv", "output.csv");
       cout << "Constructed graph with 10000 vertices using original dataset (slow)" << endl;
     } else {
       cout << "Invalid Argument" << endl;
