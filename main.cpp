@@ -71,7 +71,7 @@ int main(int argc, char** argv) {
     // Run with user input's id as source
     else {
       try {
-        m.shortestPath(Vertex(argv[2]));
+        vector = m.shortestPath(Vertex(argv[2]));
         cout << "Shortest Path from Movie " << argv[2] << ": (Not directly connected)" << endl;
         for (Vertex v : vector) {
           cout << v.get_id() << ": " << v.get_name() << endl;
