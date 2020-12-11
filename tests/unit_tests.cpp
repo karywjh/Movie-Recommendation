@@ -11,7 +11,7 @@ using std::endl;
 using std::cout;
 
 
-TEST_CASE("Movies constructor", "[weight=1][part=1]") {
+TEST_CASE("Movies constructor from vector", "[weight=1][part=1]") {
   // Test Vertices ( 1 & 2 similarity = 20) (1 & 3: 100)
   vector<Vertex> vertices;
   Vertex v1("tt0000009", "Miss Jerry", "None", vector<string>{"Blanche Bayliss", "William Courtenay", "Chauncey Depew"},  "Alexander Black", "USA", vector<string>{"Romance"}, 1894, 5.9, 302.4, "The adventures of a female reporter in the 1890s.");
@@ -27,7 +27,7 @@ TEST_CASE("Movies constructor", "[weight=1][part=1]") {
   vertices.push_back(v3);
   vertices.push_back(v4);
 
-  Movies m(vertices);
+  Movies m(vertices, "out_vector.csv");
 
   // Print textual output of the graph:
   m.getGraph().print();
@@ -47,7 +47,7 @@ TEST_CASE("Movies constructor", "[weight=1][part=1]") {
 }
 
 TEST_CASE("Movies constructor with read small file", "[weight=1][part=1]") {
-  Movies m("tests/Test_Small.csv");
+  Movies m("tests/Test_Small.csv", "small_out.csv");
   m.getGraph().print();
 
   for (Vertex v : m.getGraph().getVertices()) {
@@ -63,7 +63,7 @@ TEST_CASE("Movies constructor with read small file", "[weight=1][part=1]") {
 
 
 // TEST_CASE("Movies constructor with read entire file", "[weight=1][part=1]") {
-//   Movies m("IMDb moviesCSV.csv");
+//   Movies m("IMDb moviesCSV.csv", "full_out.csv");
 //   // for (Vertex v : m.getGraph().getVertices()) {
 //   //   cout << v.get_id() << " " << v.get_name() << endl;
 //   // }
@@ -73,7 +73,7 @@ TEST_CASE("Movies constructor with read small file", "[weight=1][part=1]") {
 // }
 
 TEST_CASE("Movies constructor with num of lines as arg", "[weight=1][part=1]") {
-  Movies m("IMDb moviesCSV.csv", 500);
+  Movies m("IMDb moviesCSV.csv", "out500.csv", 500);
   // for (Vertex v : m.getGraph().getVertices()) {
   //   cout << v.get_id() << " " << v.get_name() << endl;
   // }
@@ -81,6 +81,35 @@ TEST_CASE("Movies constructor with num of lines as arg", "[weight=1][part=1]") {
 
   m.getGraph().print();
   REQUIRE(m.getGraph().getEdges().size() == 1647);
+}
+
+TEST_CASE("Movies constructor with edge file as arg (small dataset)", "[weight=1][part=1]") {
+  Movies t("tests/Test_Small.csv", "small_out.csv");
+  Movies m("tests/Test_Small.csv", "small_out.csv", true); // read from edge file
+
+  m.getGraph().print();
+  REQUIRE(m.getGraph().getEdges().size() == 4);
+}
+
+TEST_CASE("Movies constructor with edge file as arg (500 lines)", "[weight=1][part=1]") {
+  Movies t("IMDb moviesCSV.csv", "out500.csv", 500);
+  Movies m("IMDb moviesCSV.csv", "out500.csv", 500, true);
+
+  m.getGraph().print();
+  REQUIRE(m.getGraph().getEdges().size() == 1647);
+}
+
+TEST_CASE("Movies constructor with edge file as arg (3000 lines)", "[weight=1][part=1]") {
+  clock_t tStart = clock();
+    
+  // Movies t("IMDb moviesCSV.csv", "out3000.csv", 3000);
+  Movies m("IMDb moviesCSV.csv", "out3000.csv", 3000, true);
+
+  m.getGraph().print();
+
+  printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
+
+  REQUIRE(m.getGraph().getEdges().size() == 33207);
 }
 
 TEST_CASE("BFS traversal works correctly with 3 vertices; length 1", "[weight=1][part=2]") {
@@ -342,7 +371,10 @@ TEST_CASE("shortest path works with complex graph", "[weight=1][part=3]") {
 }
 
 TEST_CASE("shortest path works with a small dataset", "[weight=1][part=3]") {
-  Movies m("tests/Test_Small.csv");
-  vector<Vertex> result = m.shortestPath(*(m.getGraph().getVertices().begin()));
+  Movies m("tests/Test_Small.csv", "small_out.csv");
+  // vector<Vertex> result = m.shortestPath(*(m.getGraph().getVertices().begin()));
+  vector<Vertex> result = m.shortestPath(Vertex("tt0003037"));
+  m.getGraph().print();
+  // cout << "Begin is: " << m.getGraph().getVertices().begin()->get_name() << endl;
   cout << result.size() << endl;
 }

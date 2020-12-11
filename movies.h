@@ -9,14 +9,16 @@ class Movies {
 
         Movies();
         Movies(const Graph*);
-        Movies(vector<Vertex> vertices);
-        Movies(string file); // reads entire file
-        Movies(string file, int num); // only reads first (num) numbers of lines
+        Movies(vector<Vertex> vertices, string out_name);
+        Movies(string file, string out_name); // reads entire file
+        Movies(string file, string out_name, int num); // only reads first (num) numbers of lines
+
+        Movies(string movies_file, string edge_file, bool read_edge); // insert edge from edge_file
+        Movies(string movies_file, string edge_file, int num, bool read_edge);
+        
 
         /**
          * Returns a constant reference to the state space graph.
-         *
-         * @returns A constant reference to the state space graph.
          */
         const Graph & getGraph() const { return g_; }
 
@@ -32,9 +34,9 @@ class Movies {
          * Country:     bool  10
          * Year:    dif <= 5  10
          * Genre:       bool  10
-         * Avg_vote: dif <= 2 10
+         * Popularity: dif <= 10 10
          * 
-         * Connect Score >= 30 (weight <= 1/30)
+         * Connect Score >= 40 (weight <= 1/40)
          */
         double calcWeight(Vertex u, Vertex v);
         
@@ -48,7 +50,7 @@ class Movies {
          * Connect if similarity reaches certain threshold
          * Output all edges (source, destrination) to output file
          */
-        void insertMovieConnection(Vertex v, std::ofstream& outFile);
+        void insertMovieConnection(Vertex v, std::ofstream& outFile, string out_name);
 
         void write_csv(std::string filename, std::vector<std::pair<std::string, std::vector<string>>> dataset);
 

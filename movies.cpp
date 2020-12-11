@@ -22,18 +22,18 @@ Movies::Movies(const Graph* g) : g_(true) {
     g_ = *g;
 }
 
-Movies::Movies(vector<Vertex> vertices) : g_(true) {
-    std::ofstream outFile("output.csv");
+Movies::Movies(vector<Vertex> vertices, string out_name) : g_(true) {
+    std::ofstream outFile(out_name);
 
     for (Vertex v : vertices) {
-        insertMovieConnection(v, outFile);
+        insertMovieConnection(v, outFile, out_name);
     }
 }
 
-Movies::Movies(string file) : g_(true) {
+Movies::Movies(string file, string out_name) : g_(true) {
 
     std::ifstream inFile(file);
-    std::ofstream outFile("output.csv");
+    std::ofstream outFile(out_name);
 
     if (!inFile.is_open())
         throw std::runtime_error("Could not open file");
@@ -44,13 +44,13 @@ Movies::Movies(string file) : g_(true) {
     // read every line and insert node
     while (getline(inFile, id, ',')) {
         Vertex v = lineToVertex(inFile, id);
-        insertMovieConnection(v, outFile);
+        insertMovieConnection(v, outFile, out_name);
     }
 }
 
-Movies::Movies(string file, int num) : g_(true) {
+Movies::Movies(string file, string out_name, int num) : g_(true) {
     std::ifstream inFile(file);
-    std::ofstream myFile("output.csv");
+    std::ofstream myFile(out_name);
 
     if (!inFile.is_open())
         throw std::runtime_error("Could not open file");
@@ -62,8 +62,68 @@ Movies::Movies(string file, int num) : g_(true) {
     // Limited to num lines of data
     while (i < num && getline(inFile, id, ',')) {
         Vertex v = lineToVertex(inFile, id);
-        insertMovieConnection(v, myFile);
+        insertMovieConnection(v, myFile, out_name);
         i++;
+    }
+}
+
+Movies::Movies(string movies_file, string edge_file, bool read_edge) : g_(true) {
+    // First insert every node
+    std::ifstream inFile(movies_file);
+    if (!inFile.is_open())
+        throw std::runtime_error("Could not open movies file");
+
+    string id, placeholder;
+    getline(inFile, placeholder, '\n'); // get rid of first line (title)
+
+    while (getline(inFile, id, ',')) {
+        Vertex v = lineToVertex(inFile, id);
+        g_.insertVertex(v);
+    }
+    inFile.close();
+
+    // Then insert edge using edge_file
+    std::ifstream inFile2(edge_file);
+    if (!inFile2.is_open())
+        throw std::runtime_error("Could not open edges file");
+
+    string first, second, w_str;
+    while (getline(inFile2, first, ',')) {
+        getline(inFile2, second, ',');
+        getline(inFile2, w_str, '\n');
+        g_.insertEdge(Vertex(first), Vertex(second));
+        g_.setEdgeWeight(Vertex(first), Vertex(second), std::stod(w_str));
+    }
+}
+
+Movies::Movies(string movies_file, string edge_file, int num, bool read_edge) : g_(true) {
+    // First insert every node
+    std::ifstream inFile(movies_file);
+    if (!inFile.is_open())
+        throw std::runtime_error("Could not open movies file");
+
+    string id, placeholder;
+    getline(inFile, placeholder, '\n'); // get rid of first line (title)
+
+    int i = 0;
+    while (i < num && getline(inFile, id, ',')) {
+        Vertex v = lineToVertex(inFile, id);
+        g_.insertVertex(v);
+        i++;
+    }
+    inFile.close();
+
+    // Then insert edge using edge_file
+    std::ifstream inFile2(edge_file);
+    if (!inFile2.is_open())
+        throw std::runtime_error("Could not open edges file");
+
+    string first, second, w_str;
+    while (getline(inFile2, first, ',')) {
+        getline(inFile2, second, ',');
+        getline(inFile2, w_str, '\n');
+        g_.insertEdge(Vertex(first), Vertex(second));
+        g_.setEdgeWeight(Vertex(first), Vertex(second), std::stod(w_str));
     }
 }
 
@@ -88,7 +148,7 @@ Vertex Movies::lineToVertex(std::ifstream& inFile, string id) {
     }
 
     getline(inFile, yearstr, ',');
-    cout << id << " " << name << " " << language << " year:" << yearstr << "." << endl;
+    // cout << id << " " << name << " " << language << " year:" << yearstr << "." << endl;
     year = stoi(yearstr);
     getline(inFile, rat, ',');
     rating = std::stod(rat);
@@ -133,12 +193,12 @@ Vertex Movies::lineToVertex(std::ifstream& inFile, string id) {
     return Vertex(id, name, language, actors, director, country, genre, year, rating, popularity, description);
 }
 
-void Movies::insertMovieConnection(Vertex v, std::ofstream& myFile) {
+void Movies::insertMovieConnection(Vertex v, std::ofstream& myFile, string out_name) {
     // Connect it with other vertices
     g_.insertVertex(v);
     // cout << v.get_id() << " " << v.get_name() << endl;
 
-    myFile.open("output.csv", std::ios::out |std::ofstream::app);
+    myFile.open(out_name, std::ios::out | std::ofstream::app);
 
     for (Vertex u: g_.getVertices()) {
         if (v != u) {
@@ -151,7 +211,7 @@ void Movies::insertMovieConnection(Vertex v, std::ofstream& myFile) {
                 // Store edge to file
                 string id_v = v.get_id();
                 string id_u = u.get_id();
-                myFile << v.get_id() << "," << u.get_id() << "\n";
+                myFile << v.get_id() << "," << u.get_id() << "," << weight << "\n";
             }
         }
     }
@@ -232,16 +292,22 @@ void Movies::BFS(Graph* G, Vertex v, vector<string>& ids) {
  */
 double Movies::calcWeight(Vertex u, Vertex v) {
     int total_score = 0;
+
     if ((u.get_actor() == v.get_actor()))
         total_score += 30;
+
     if (u.get_director() == v.get_director())
         total_score += 30;
+
     if ((u.get_country() == v.get_country()))
         total_score += 10;
+
     if ((abs(u.get_year() - v.get_year()) <= 5))
         total_score += 10;
+
     if ((abs(u.get_popularity() - v.get_popularity()) <= 10))
         total_score += 10;
+
     for (string su: u.get_genre()) {
         for (string sv: v.get_genre()) {
             if (su == sv) {

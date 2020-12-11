@@ -274,14 +274,17 @@ bool Graph::insertEdge(Vertex source, Vertex destination)
         adjacency_list[source] = unordered_map<Vertex, Edge, MyHash>();
     }
         //source vertex exists
-    adjacency_list[source][destination] = Edge(source, destination);
+    Vertex orig_source = adjacency_list.find(source)->first;
+    Vertex orig_destination = adjacency_list.find(destination)->first;
+
+    adjacency_list[orig_source][orig_destination] = Edge(orig_source, orig_destination);
     if(!directed)
     {
         if(adjacency_list.find(destination)== adjacency_list.end())
         {
-            adjacency_list[destination] = unordered_map<Vertex, Edge, MyHash>();
+            adjacency_list[orig_destination] = unordered_map<Vertex, Edge, MyHash>();
         }
-        adjacency_list[destination][source] = Edge(source, destination);
+        adjacency_list[orig_destination][orig_source] = Edge(orig_source, orig_destination);
     }
     
     return true;
@@ -407,7 +410,7 @@ void Graph::print() const
 {
     for (auto it = adjacency_list.begin(); it != adjacency_list.end(); ++it) 
     {
-        cout << it->first.get_id() << ": " << it->first.get_name() << endl;
+        cout << it->first.get_id() << ": " << it->first.get_name() << ": " << it->first.get_description() << endl;
         for (auto it2 = it->second.begin(); it2 != it->second.end(); ++it2) 
         {
             std::stringstream ss;
