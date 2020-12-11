@@ -68,4 +68,6 @@ class Movies {
     private:
         Graph g_;
         unordered_map<Vertex, string, MyHash> map;
+
+        void BFS(Graph*, Vertex, vector<string>&);
 };
