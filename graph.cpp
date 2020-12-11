@@ -5,82 +5,21 @@ const int Graph::InvalidWeight = INT_MIN;
 const string Graph:: InvalidLabel = "_CS225INVALIDLABEL";
 const Edge Graph::InvalidEdge = Edge(Graph::InvalidVertex, Graph::InvalidVertex, Graph::InvalidWeight, Graph::InvalidLabel);
 
-Graph::Graph(bool weighted) : weighted(weighted),directed(false),random(Random(0))
+Graph::Graph(bool weighted) : weighted(weighted),directed(false)
 {
 }
 
-Graph::Graph(bool weighted, bool directed) : weighted(weighted),directed(directed),random(Random(0))
+Graph::Graph(bool weighted, bool directed) : weighted(weighted),directed(directed)
 {
 }
 
-Graph::Graph(bool weighted, int numVertices, unsigned long seed)
-    :weighted(weighted),
-      directed(false),
-     random(Random(seed)) 
-{
-    if (numVertices < 2)
-    {
-     error("numVertices too low");
-     exit(1);
-    }
-
-    vector<Vertex> vertices;
-    for (int i = 0; i < numVertices; i++)
-    {
-        insertVertex(to_string(i));
-        vertices.push_back(to_string(i));
-    }
-
-    // make sure all vertices are connected
-    random.shuffle(vertices);
-    Vertex cur = vertices[0];
-    for (size_t i = 0; i < vertices.size() - 1; ++i)
-    {
-        Vertex next = vertices[i + 1];
-        insertEdge(cur, next);
-        if (weighted) 
-        {
-            double weight = random.nextInt();
-            setEdgeWeight(cur, next, weight);
-        }
-        cur = next;
-    }
-
-    // keep the graph from being overpopulated with edges,
-    //  while still maintaining a little randomness
-    int numFailures = 0;
-    int idx = 0;
-    random.shuffle(vertices);
-    while (numFailures < 2) 
-    {
-        if (!insertEdge(vertices[idx], vertices[idx + 1])) 
-        {
-            ++numFailures;
-        } 
-        else 
-        {
-            // if insertEdge() succeeded...
-            if (weighted)
-                setEdgeWeight(vertices[idx], vertices[idx + 1],
-                              random.nextInt());
-            ++idx;
-            if (idx >= numVertices - 2) 
-            {
-                idx = 0;
-                random.shuffle(vertices);
-            }
-        }
-    }
-}
-
-Graph::Graph(const Graph& g): adjacency_list(g.adjacency_list), weighted(g.weighted),directed(g.directed),random(g.random), picNum(g.picNum), picName(g.picName) {
+Graph::Graph(const Graph& g): adjacency_list(g.adjacency_list), weighted(g.weighted),directed(g.directed), picNum(g.picNum), picName(g.picName) {
 
 }
 
 Graph& Graph::operator=(const Graph& g) {
     weighted = g.weighted;
     directed = g.directed;
-    random = g.random;
     picNum = g.picNum;
     picName = g.picName;
     adjacency_list = g.adjacency_list;

@@ -36,7 +36,6 @@
 
 #include "edge.h"
 #include "vertex.h"
-#include "random.h"
 #include "MyHash.h"
 
 using std::cerr;
@@ -73,15 +72,6 @@ public:
      * @param directed - specifies whether the graph is directed
      */
     Graph(bool weighted, bool directed);
-
-    /**
-     * Constructor to create a random, connected graph.
-     * @param weighted - specifies whether the graph is a weighted graph or
-     *  not
-     * @param numVertices - the number of vertices the graph will have
-     * @param seed - a random seed to create the graph with
-     */
-    Graph(bool weighted, int numVertices, unsigned long seed);
 
     /**
      * Constructor to copy a graph
@@ -256,7 +246,6 @@ private:
 
     bool weighted;
     bool directed;
-    Random random;
     int picNum;
     string picName;
 
