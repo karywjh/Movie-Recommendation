@@ -27,7 +27,7 @@ make final_project
 ./final_project BFS         // runs BFS and print out movie names in BFS order
 
 ./final_project shortestpath     // runs Graph Coloring Algorithm
-./final_project shortestpath id  // runs Graph Coloring Algorithm with user specified id
+./final_project shortestpath id  // runs Graph Coloring Algorithm with user specified id as the source
 //example: (replace id with e.g. tt0006206, tt0007047, tt0010418, and etc.)
 ./final_project shortestpath tt0005060
 ```
@@ -35,7 +35,7 @@ make final_project
 To run our constructor with different args:
 ```c++
 make final_project
-./final_project constructor // construct graph with 3000 vertices
+./final_project constructor              // construct graph with 3000 vertices
 ./final_project constructor num_vertices // Replace num_vertices with an int to specify how many vertices you want in the graph (run with original csv -- will be slow)
 
 // replace edgefile_name with out500.csv out3000.csv or out10000.csv; replace num_vertices with corresponding int
@@ -51,6 +51,6 @@ make final_project
 make final_project
 ./final_project 10000 false // Slow: Using original dataset to read in 10000 vertices and making the graph, output the edge connection in output.csv
 
-./final_project 10000 true // Fast: Using premade edge connection file (out10000.csv) to build the graph with 10000 vertices
+./final_project 10000 true  // Fast: Using premade edge connection file (out10000.csv) to build the graph with 10000 vertices
 ``` 
 
