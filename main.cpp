@@ -66,16 +66,21 @@ int main(int argc, char** argv) {
       cout << "Shortest Path from Movie tt0004181: (Not directly connected if there exist one)" << endl;
 
       for (Vertex v : vector) {
-        cout << v.get_id() << ": " << v.get_name() << endl;
+        cout << endl;
+        cout << v.get_id() << ": " << v.get_name() << ": Description: " << v.get_description() << endl;
       }
     }
     // Run with user input's id as source
     else {
       try {
         vector = m.getShortestPath(Vertex(argv[2]));
-        cout << "Shortest Path from Movie " << argv[2] << ": (Not directly connected if there exist one)" << endl;
-        for (Vertex v : vector) {
-          cout << v.get_id() << ": " << v.get_name() << endl;
+        if (!vector.empty()) {
+          cout << "Shortest Path from Movie " << argv[2] << ": (Not directly connected if there exist one)" << endl;
+
+          for (Vertex v : vector) {
+            cout << endl;
+            cout << v.get_id() << ": " << v.get_name() << ": Description: " << v.get_description() << endl;
+          }
         }
       } catch(std::exception e) {
         throw std::invalid_argument(e.what());
@@ -139,6 +144,7 @@ int main(int argc, char** argv) {
   // Calculate total time for program to run
   auto stop = high_resolution_clock::now();
   auto duration = duration_cast<milliseconds>(stop - start);
+  cout << endl;
   cout << "Program takes " << (duration.count() / 1000.0) << "s" << endl;
   return 0;
 }

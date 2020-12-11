@@ -376,6 +376,11 @@ unordered_map<Vertex, std::pair<Vertex, double>, MyHash> Movies::shortestPathHel
 }
 
 vector<Vertex> Movies::shortestPathFilter(unordered_map<Vertex, std::pair<Vertex, double>, MyHash> pairs, Vertex s) {
+    if (!g_.vertexExists(s.get_id())) {
+        cout << "We cannot find path to vertex " << s.get_id() << ". Vertex with this id does not exist in the graph." << endl;
+        return vector<Vertex>();
+    }
+
     vector<Vertex> neighbors = g_.getAdjacent(s);
     Vertex destination;
     double min = INT_MAX;
@@ -408,8 +413,9 @@ vector<Vertex> Movies::shortestPathFilter(unordered_map<Vertex, std::pair<Vertex
                 neighbor = w;
             }
         }
+        recommendations.push_back(pairs[neighbor].first);
         recommendations.push_back(neighbor);
-        cout << "We cannot find path to vertex " << s.get_id() << ": " << s.get_name() << " that's not directly connected" << endl;
+        cout << "We cannot find path to vertex " << s.get_id() << " that's not directly connected" << endl;
         cout << neighbor.get_id() << " is its closest neighbor" << endl;
     }   
     return recommendations;
