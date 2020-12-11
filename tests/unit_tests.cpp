@@ -112,19 +112,22 @@ TEST_CASE("Movies constructor with edge file as arg (3000 lines)", "[weight=1][p
   REQUIRE(m.getGraph().getEdges().size() == 33207);
 }
 
-TEST_CASE("BFS traversal works correctly with 3 vertices; length 1", "[weight=1][part=2]") {
+TEST_CASE("BFS traversal works correctly with 3 vertices; length 1， with one disconnected", "[weight=1][part=2]") {
   Graph g(true, false);
   Vertex v1("A");
   Vertex v2("B");
   Vertex v3("C");
+  Vertex v4("D");
+  g.insertVertex(v4);
   g.insertVertex(v3);
   g.insertVertex(v2);
   g.insertVertex(v1);
   g.insertEdge(v1, v2);
   g.insertEdge(v1, v3);
   Movies m(&g);
-  vector<Vertex> solution = {v1, v3, v2};
+  vector<Vertex> solution = {v1, v3, v2, v4};
   REQUIRE(m.BFS() == solution);
+  REQUIRE(m.BFS().size() == m.getGraph().getVertices().size());
 }
 
 TEST_CASE("BFS traversal works correctly with 6 vertices; length 2", "[weight=1][part=2]") {

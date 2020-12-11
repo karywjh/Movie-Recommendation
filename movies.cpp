@@ -4,6 +4,7 @@
 #include <sstream>
 #include <map>
 #include <algorithm>
+#include <set>
 
 using std::string;
 using std::queue;
@@ -405,7 +406,54 @@ vector<Vertex> Movies::shortestPath(Vertex s) {
         pre = p[pre];
     }
     reverse(recommendations.begin(), recommendations.end());
-    cout << "source: " << s.get_id() << endl;
-    cout << "destination: " << destination.get_id() << endl;
     return recommendations;
+}
+
+int Movies::greedyColoring() {
+    vector<Vertex> vertices = g_.getVertices();
+    size_t size = vertices.size();
+    unordered_map<Vertex, int, MyHash> result;
+  
+    // Initialize remaining all vertices as unassigned 
+    for (Vertex v: vertices) 
+        result[v] = -1;  // no color is assigned to v
+
+    // Assign the first color to first vertex 
+    result[vertices[0]]  = 0; 
+  
+    // A temporary array to store the available colors. True 
+    // value of available[cr] would mean that the color cr is 
+    // assigned to one of its adjacent vertices 
+    unordered_map<int, bool> available;
+    for (int cr = 0; cr < (int)size; cr++) 
+        available[cr] = false; 
+  
+    // Assign colors to remaining V-1 vertices 
+    for (int u = 1; u < (int)size; u++) 
+    { 
+        // Process all adjacent vertices and flag their colors 
+        // as unavailable 
+        vector<Vertex> neighbors = g_.getAdjacent(vertices[u]);
+        for (auto it = neighbors.begin(); it != neighbors.end(); it++) 
+            if (result[*it] != -1) 
+                available[result[*it]] = true; 
+  
+        // Find the first available color 
+        int cr; 
+        for (cr = 0; cr < (int)size; cr++) 
+            if (available[cr] == false) 
+                break; 
+  
+        result[vertices[u]] = cr; // Assign the found color 
+  
+        // Reset the values back to false for the next iteration 
+        for (auto it = neighbors.begin(); it != neighbors.end(); it++) 
+            if (result[*it] != -1) 
+                available[result[*it]] = false; 
+    }
+    set<int> colors;
+    for(auto it = result.begin();it != result.end(); it++) {
+        colors.insert(it->second);
+    }
+    return colors.size();
 }

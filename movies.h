@@ -40,6 +40,11 @@ class Movies {
         vector<Vertex> shortestPath(Vertex source);
 
         /**
+         * graph coloring, return the number of colors used to fill all vertices
+         */
+        int greedyColoring();
+
+        /**
          * Actor:       bool  30
          * Director:    bool  30
          * Country:     bool  10
