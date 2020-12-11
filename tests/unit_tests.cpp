@@ -108,19 +108,22 @@ TEST_CASE("Movies constructor with edge file as arg (3000 lines)", "[weight=1][p
   REQUIRE(m.getGraph().getEdges().size() == 33207);
 }
 
-TEST_CASE("BFS traversal works correctly with 3 vertices; length 1", "[weight=1][part=2]") {
+TEST_CASE("BFS traversal works correctly with 3 vertices; length 1， with one disconnected", "[weight=1][part=2]") {
   Graph g(true, false);
   Vertex v1("A");
   Vertex v2("B");
   Vertex v3("C");
+  Vertex v4("D");
+  g.insertVertex(v4);
   g.insertVertex(v3);
   g.insertVertex(v2);
   g.insertVertex(v1);
   g.insertEdge(v1, v2);
   g.insertEdge(v1, v3);
   Movies m(&g);
-  vector<Vertex> solution = {v1, v3, v2};
+  vector<Vertex> solution = {v1, v3, v2, v4};
   REQUIRE(m.BFS() == solution);
+  REQUIRE(m.BFS().size() == m.getGraph().getVertices().size());
 }
 
 TEST_CASE("BFS traversal works correctly with 6 vertices; length 2", "[weight=1][part=2]") {
@@ -383,4 +386,70 @@ TEST_CASE("shortest path with 3000 vertices", "[weight=1][part=3]") {
   for (Vertex v : result) {
     cout << v.get_id() << ": " << v.get_name() << " similarity: " << (1.0 / m.getGraph().getEdgeWeight(Vertex("tt0010162"), v)) << endl;
   }
+}
+
+TEST_CASE("graph coloring works with 3 vertices", "[weight=1][part=4]") {
+  Graph g(true, false);
+  Vertex v1("A");
+  Vertex v2("B");
+  Vertex v3("C");
+  g.insertVertex(v3);
+  g.insertVertex(v2);
+  g.insertVertex(v1);
+  g.insertEdge(v1, v2);
+  g.insertEdge(v2, v3);
+  Movies m(&g);
+  int solution = 2;
+  REQUIRE(m.greedyColoring() == solution);
+}
+
+TEST_CASE("graph coloring works with 10 vertices complex graph", "[weight=1][part=4]") {
+  Graph g(true, false);
+  Vertex v1("A");
+  Vertex v2("B");
+  Vertex v3("C");
+  Vertex v4("D");
+  Vertex v5("E");
+  Vertex v6("F");
+  Vertex v7("G");
+  Vertex v8("H");
+  Vertex v9("I");
+  Vertex v10("J");
+  g.insertVertex(v10);
+  g.insertVertex(v9);
+  g.insertVertex(v8);
+  g.insertVertex(v7);
+  g.insertVertex(v6);
+  g.insertVertex(v5);
+  g.insertVertex(v4);
+  g.insertVertex(v3);
+  g.insertVertex(v2);
+  g.insertVertex(v1);
+  g.insertEdge(v1, v3);
+  g.insertEdge(v1, v4);
+  g.insertEdge(v2, v4);
+  g.insertEdge(v2, v5);
+  g.insertEdge(v3, v5);
+  g.insertEdge(v6, v7);
+  g.insertEdge(v7, v8);
+  g.insertEdge(v8, v9);
+  g.insertEdge(v9, v10);
+  g.insertEdge(v10, v6);
+  g.insertEdge(v1, v6);
+  g.insertEdge(v2, v7);
+  g.insertEdge(v3, v8);
+  g.insertEdge(v4, v9);
+  g.insertEdge(v5, v10);
+  Movies m(&g);
+  int solution = 3;
+  REQUIRE(m.greedyColoring() == solution);
+}
+
+TEST_CASE("greedy coloring works with edge file as arg (500 lines)", "[weight=1][part=4]") {
+  Movies m("IMDb moviesCSV.csv", "out500.csv", 500, true);
+  Movies t("IMDb moviesCSV.csv", "out3000.csv", 3000, true);
+  int solution_1 = 20;
+  int solution_2 = 43;
+  REQUIRE(m.greedyColoring() == solution_1);
+  REQUIRE(t.greedyColoring() == solution_2);
 }
