@@ -225,9 +225,10 @@ TEST_CASE("shortest path works with 2 nodes one edge", "[weight=1][part=3]") {
   g.insertEdge(v1, v2);
   g.setEdgeWeight(v1, v2, 1.0/2);
   Movies m(&g);
-  vector<Vertex> solution;
-  REQUIRE(m.shortestPath(v1) == solution);
-  REQUIRE(m.shortestPath(v2) == solution);
+  vector<Vertex> solution_1 = {v2};
+  vector<Vertex> solution_2 = {v1};
+  REQUIRE(m.getShortestPath(v1) == solution_1);
+  REQUIRE(m.getShortestPath(v2) == solution_2);
   cout << endl;
 }
 
@@ -246,10 +247,12 @@ TEST_CASE("shortest path works with triangle", "[weight=1][part=3]") {
   g.setEdgeWeight(v1, v3, 1.0/3);
   g.setEdgeWeight(v2, v3, 1.0/4);
   Movies m(&g);
-  vector<Vertex> solution;
-  REQUIRE(m.shortestPath(v1) == solution);
-  REQUIRE(m.shortestPath(v2) == solution);
-  REQUIRE(m.shortestPath(v3) == solution);
+  vector<Vertex> solution_1 = {v3};
+  vector<Vertex> solution_2 = {v3};
+  vector<Vertex> solution_3 = {v2};
+  REQUIRE(m.getShortestPath(v1) == solution_1);
+  REQUIRE(m.getShortestPath(v2) == solution_2);
+  REQUIRE(m.getShortestPath(v3) == solution_3);
   cout << endl;
 }
 
@@ -273,13 +276,13 @@ TEST_CASE("shortest path works with triangle plus one more edge", "[weight=1][pa
   g.setEdgeWeight(v2, v4, 1.0/5);
   Movies m(&g);
   vector<Vertex> solution_1 = {v1, v2, v4};
-  vector<Vertex> solution_2;
+  vector<Vertex> solution_2 = {v4};
   vector<Vertex> solution_3 = {v3, v2, v4};
   vector<Vertex> solution_4 = {v4, v2, v3};
-  REQUIRE(m.shortestPath(v1) == solution_1);
-  REQUIRE(m.shortestPath(v2) == solution_2);
-  REQUIRE(m.shortestPath(v3) == solution_3);
-  REQUIRE(m.shortestPath(v4) == solution_4);
+  REQUIRE(m.getShortestPath(v1) == solution_1);
+  REQUIRE(m.getShortestPath(v2) == solution_2);
+  REQUIRE(m.getShortestPath(v3) == solution_3);
+  REQUIRE(m.getShortestPath(v4) == solution_4);
   cout << endl;
 }
 
@@ -311,11 +314,11 @@ TEST_CASE("shortest path works with triangle plus two more edges", "[weight=1][p
   vector<Vertex> solution_3 = {v3, v2, v4};
   vector<Vertex> solution_4 = {v4, v2, v3};
   vector<Vertex> solution_5 = {v5, v4, v2};
-  REQUIRE(m.shortestPath(v1) == solution_1);
-  REQUIRE(m.shortestPath(v2) == solution_2);
-  REQUIRE(m.shortestPath(v3) == solution_3);
-  REQUIRE(m.shortestPath(v4) == solution_4);
-  REQUIRE(m.shortestPath(v5) == solution_5);
+  REQUIRE(m.getShortestPath(v1) == solution_1);
+  REQUIRE(m.getShortestPath(v2) == solution_2);
+  REQUIRE(m.getShortestPath(v3) == solution_3);
+  REQUIRE(m.getShortestPath(v4) == solution_4);
+  REQUIRE(m.getShortestPath(v5) == solution_5);
 }
 
 TEST_CASE("shortest path works with complex graph", "[weight=1][part=3]") {
@@ -364,15 +367,15 @@ TEST_CASE("shortest path works with complex graph", "[weight=1][part=3]") {
   vector<Vertex> solution_1 = {v1, v6, v7};
   vector<Vertex> solution_2 = {v5, v6, v1};
   vector<Vertex> solution_3 = {v3, v5, v7};
-  REQUIRE(m.shortestPath(v1) == solution_1);
-  REQUIRE(m.shortestPath(v5) == solution_2);
-  REQUIRE(m.shortestPath(v3) == solution_3);
+  REQUIRE(m.getShortestPath(v1) == solution_1);
+  REQUIRE(m.getShortestPath(v5) == solution_2);
+  REQUIRE(m.getShortestPath(v3) == solution_3);
 }
 
 TEST_CASE("shortest path works with a small dataset", "[weight=1][part=3]") {
   Movies m("tests/Test_Small.csv", "small_out.csv");
   // vector<Vertex> result = m.shortestPath(*(m.getGraph().getVertices().begin()));
-  vector<Vertex> result = m.shortestPath(Vertex("tt0003037"));
+  vector<Vertex> result = m.getShortestPath(Vertex("tt0003037"));
   m.getGraph().print();
   // cout << "Begin is: " << m.getGraph().getVertices().begin()->get_name() << endl;
   cout << result.size() << endl;
@@ -380,7 +383,7 @@ TEST_CASE("shortest path works with a small dataset", "[weight=1][part=3]") {
 
 TEST_CASE("shortest path with 3000 vertices", "[weight=1][part=3]") {
   Movies m("IMDb moviesCSV.csv", "out3000.csv", 3000, true);
-  vector<Vertex> result = m.shortestPath(Vertex("tt0010162"));
+  vector<Vertex> result = m.getShortestPath(Vertex("tt0010162"));
   cout << result.size() << endl;
 
   for (Vertex v : result) {

@@ -337,7 +337,7 @@ double Movies::calcWeight(Vertex u, Vertex v) {
     return 1.0 / double(total_score);
 }
 
-vector<Vertex> Movies::shortestPath(Vertex s) {
+unordered_map<Vertex, std::pair<Vertex, double>, MyHash> Movies::shortestPathHelper(Vertex s) {
     // map used to track distance to source
     unordered_map<Vertex, double, MyHash> d;
 
@@ -385,16 +385,25 @@ vector<Vertex> Movies::shortestPath(Vertex s) {
             }
         }
     }
+    unordered_map<Vertex, std::pair<Vertex, double>, MyHash> result;
+    for(Vertex v: g_.getVertices()) {
+        std::pair<Vertex, double> pair(p[v], d[v]);
+        result[v] = pair;
+    }
+    return result;
+}
+
+vector<Vertex> Movies::shortestPathFilter(unordered_map<Vertex, std::pair<Vertex, double>, MyHash> pairs, Vertex s) {
     vector<Vertex> neighbors = g_.getAdjacent(s);
     Vertex destination;
     double min = INT_MAX;
 
-    // find a vertex that is closet to s among vertices that are not neighbors of s
-    for(auto it = d.begin(); it != d.end(); it++) {
+    // find a vertex that is closet to s among vertices that is not a neighbor of s
+    for(auto it = pairs.begin(); it != pairs.end(); it++) {
         if(std::find(neighbors.begin(), neighbors.end(), it->first) != neighbors.end() || it->first == s)
             continue;
-        if(it->second < min) {
-            min = it->second;
+        else if(it->second.second < min) {
+            min = it->second.second;
             destination = it->first;
         }
     }
@@ -403,10 +412,29 @@ vector<Vertex> Movies::shortestPath(Vertex s) {
     // keep track on predecessor to produce the path
     while(pre != Vertex()) {
         recommendations.push_back(pre);
-        pre = p[pre];
+        pre = pairs[pre].first;
     }
-    reverse(recommendations.begin(), recommendations.end());
+    if(!recommendations.empty()) {
+        reverse(std::begin(recommendations), std::end(recommendations));
+    }
+    else {
+        double min = INT_MAX;
+        Vertex neighbor;
+        for(Vertex w: g_.getAdjacent(s)) {
+            if(pairs[w].second < min) {
+                min = pairs[w].second;
+                neighbor = w;
+            }
+        }
+        recommendations.push_back(neighbor);
+        cout << "We cannot find related path of this vertex" << endl;
+        cout << neighbor.get_id() << " is its closet neighbor" << endl;
+    }   
     return recommendations;
+}
+
+vector<Vertex> Movies::getShortestPath(Vertex s) {
+    return shortestPathFilter(shortestPathHelper(s), s);
 }
 
 int Movies::greedyColoring() {

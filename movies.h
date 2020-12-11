@@ -34,10 +34,20 @@ class Movies {
         void BFS(Graph*, Vertex, vector<Vertex>&);
 
         /**
-         * return a vector of shortest path. which return the path between the source and a vertex
-         * which is closet to the source among vertices that are not neighbors of the source. 
+         * Return an unordered map: key is vertex, value is a pair of each vertex's predecessor and distance
+         * to the source
          */
-        vector<Vertex> shortestPath(Vertex source);
+        unordered_map<Vertex, std::pair<Vertex, double>, MyHash> shortestPathHelper(Vertex s);
+
+        /**
+         * Filter the pair of each vertex's predecessor and distance. 
+         */
+        vector<Vertex> shortestPathFilter(unordered_map<Vertex, std::pair<Vertex, double>, MyHash>, Vertex);
+
+        /**
+         * wrapper function
+         */
+        vector<Vertex> getShortestPath(Vertex s);
 
         /**
          * graph coloring, return the number of colors used to fill all vertices
