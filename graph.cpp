@@ -206,7 +206,7 @@ string Graph::getEdgeLabel(Vertex source, Vertex destination) const
     return adjacency_list[source][destination].get_label();
 }
 
-int Graph::getEdgeWeight(Vertex source, Vertex destination) const
+double Graph::getEdgeWeight(Vertex source, Vertex destination) const
 {
     if (!weighted)
         error("can't get edge weights on non-weighted graphs!");
