@@ -33,6 +33,8 @@ make final_project
 ```
 
 To run our constructor with different args:
+
+You can add word "print" to the end of those commands to print graph out.
 ```c++
 make final_project
 ./final_project constructor              // construct graph with 3000 vertices
@@ -42,8 +44,11 @@ make final_project
 // Edge connection file is already been made for 500, 3000, and 10000 vertices dataset so runtime will be fast
 ./final_project constructor edgefile_name num_vertices
 
+// You can add print to the end of any of these commands to print out the connections between movies
+
  // example:
 ./final_project constructor out500.csv 500
+./final_project constructor out500.csv 500 print
 ```
 
 **To get a sense of our algorithm optimization on constructing the graph:**
