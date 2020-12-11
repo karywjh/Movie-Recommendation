@@ -22,11 +22,22 @@ class Movies {
          */
         const Graph & getGraph() const { return g_; }
 
-        vector<string> BFS();
+        /**
+         * BFS traversal
+         * return a vector of Vertex
+         */
+        vector<Vertex> BFS();
 
-        void BFS(Graph*, Vertex, vector<string>&);
+        /**
+         * BFS helper function
+         */
+        void BFS(Graph*, Vertex, vector<Vertex>&);
 
-        vector<Vertex> shortestPath(Vertex);
+        /**
+         * return a vector of shortest path. which return the path between the source and a vertex
+         * which is closet to the source among vertices that are not neighbors of the source. 
+         */
+        vector<Vertex> shortestPath(Vertex source);
 
         /**
          * Actor:       bool  30
