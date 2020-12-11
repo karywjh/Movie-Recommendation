@@ -79,7 +79,7 @@ Completed making graph, edge, and vertex class. Filtered out unuseful datas in t
 
 **Dec 5, 2020**
 
-Mid-project check-in meeting. 
+Mid-project check-in meeting. TODO before final submission:
 
 - Provide a smaller dataset to submit/test.
 - Add commands needed to run in Readme.
@@ -92,12 +92,15 @@ Mid-project check-in meeting.
 
 ### What We Have Done
 
-Made write edge connections to output file while adding edges worked. 
+Made write edge connections to output file while adding edges worked. Written constructor that can create graph using edge connection file.
+
+Made main.cpp, that user can pass in different arguments to run different algorithms.
 
 <br />
 
 ### Details (Meeting Notes)
 ---
 
-**Dec 6, 2020**
+**Dec 10, 2020**
 
+Discussed how algorithms can be implemented and improved. Tested and fixed issues with constructors and algorithms.
