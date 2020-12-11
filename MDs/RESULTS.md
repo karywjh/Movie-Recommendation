@@ -4,7 +4,7 @@ Made by Enxu Han, Jiahui(Kary) Wang, Junbo He, Shun Li
 (*enxuhan2-jiahuiw4-junbohe2-shunl2*)
 
 ## Outcome
----
+
 ### Dataset
 We've used [IMDb dataset](https://www.kaggle.com/stefanoleone992/imdb-extensive-dataset) to construct the graph. At the very beginning, we deleted invalid movies (rows with blank elements, with multiple directors, and etc.) and deleted some unuseful features. 
 
@@ -17,7 +17,6 @@ We used blablabla
 <br/>
 
 ## Discoveries
----
 
 ### Constructor Optimization
 We've reached a much faster execution time using the second constructor method:
