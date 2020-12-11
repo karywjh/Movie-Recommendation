@@ -13,12 +13,13 @@ using namespace std::chrono;
 
 /**
  * Need to run:
- * constructor  (./main constructor num_vertices) -- run with original csv 
- *              (./main constructor edgefile_name num_vertices)
- *              (./main constructor edgefile_name num_vertices)
- * BFS run with default 3000 vertices graph (./main BFS)
- * Shortest Path (./main shortestpath) or (./main shortestpath id)
- * Graph coloring (./main coloring)
+ * make final_project
+ * constructor  (./final_project constructor num_vertices) -- run with original csv 
+ *              (./final_project constructor edgefile_name num_vertices)
+ *              (./final_project constructor edgefile_name num_vertices)
+ * BFS run with default 3000 vertices graph (./final_project BFS)
+ * Shortest Path (./final_project shortestpath) or (./final_project shortestpath id)
+ * Graph coloring (./final_project coloring)
  */
 int main(int argc, char** argv) {
   auto start = high_resolution_clock::now();
