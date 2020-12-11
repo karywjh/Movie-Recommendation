@@ -171,6 +171,9 @@ Vertex Movies::lineToVertex(std::ifstream& inFile, string id) {
         actor.pop_back();
         actors.pop_back();
         actors.push_back(actor);
+    } else {
+        getline(inFile, actor, ',');
+        actors.push_back(actor);
     }
 
     if (inFile.peek() == '"') {
@@ -198,7 +201,7 @@ Vertex Movies::lineToVertex(std::ifstream& inFile, string id) {
 void Movies::insertMovieConnection(Vertex v, std::ofstream& myFile, string out_name) {
     // Connect it with other vertices
     g_.insertVertex(v);
-    // cout << v.get_id() << " " << v.get_name() << endl;
+    cout << v.get_id() << " " << v.get_name() << endl;
 
     myFile.open(out_name, std::ios::out | std::ofstream::app);
 
