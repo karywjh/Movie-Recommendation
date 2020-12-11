@@ -2,35 +2,53 @@
 #include <vector>
 #include "edge.h"
 #include <iostream>
+#include <chrono> 
+#include <exception>
+#include <string.h>
+#include<stdio.h> 
 
 using std::endl;
 using std::cout;
+using namespace std::chrono;
 
-int main() {
+/**
+ * Need to run constructor (./main constructor edgefile_name num_vertices edge_file) 
+ * BFS run with default 3000 vertices graph (./main BFS)
+ * Shortest Path
+ * Graph coloring
+ */
+int main(int argc, char** argv) {
+  auto start = high_resolution_clock::now();
 
-  // Test Vertices ( 1 & 2 similarity = 20) (1 & 3: 100)
-  vector<Vertex> vertices;
-  Vertex v1("tt0000009", "Miss Jerry", "None", vector<string>{"Blanche Bayliss", "William Courtenay", "Chauncey Depew"},  "Alexander Black", "USA", vector<string>{"Romance"}, 1894, 5.9, 302.4, "The adventures of a female reporter in the 1890s.");
+  if (argc == 5 && strcmp(argv[1], "constructor") == 0) {  
+    try {
+      if (strcmp(argv[4], "true") == 0) {
+        Movies m("IMDb moviesCSV.csv", argv[2], std::stoi(argv[3]), true);
+        m.getGraph().print();
+        cout << "number of vertices: " << m.getGraph().getVertices().size() << endl;
 
-  Vertex v2("tt0000574", "The Story of the Kelly Gang", "None", vector<string>{"Elizabeth Tait", "John Tait", "Norman Campbell", "Bella Cola", "Will Coyne"}, "Charles Tait", "Australia", vector<string>{"Biography", "Crime", "Drama"}, 1906, 6.1, 305.4, "True story of notorious Australian outlaw Ned Kelly (1855-80).");
-
-  Vertex v3("tt0000010", "Miss Jerry2", "None", vector<string>{"Blanche Bayliss", "William Courtenay", "Chauncey Depew"}, "Alexander Black", "USA", vector<string>{"Crime", "Romance"}, 1894, 5.9, 302.4, "The adventures of a female reporter in the 1890s.");
-
-  vertices.push_back(v1);
-  vertices.push_back(v2);
-  vertices.push_back(v3);
-  
-  Movies m(vertices);
-  
-  // Print textual output of the graph:
-  m.getGraph().print();
-
-  for (Vertex v : m.getGraph().getVertices()) {
-    cout << v.get_id() << endl;
+      } else if (strcmp(argv[4], "false") == 0) {
+        Movies m("IMDb moviesCSV.csv", argv[2], std::stoi(argv[3]));
+        m.getGraph().print();
+      } else {
+        throw std::invalid_argument("invalid boolean: fourth arg");
+      }
+    } catch (std::exception e) {
+      throw std::invalid_argument(e.what());
+    }
+  } else if (argc == 2 && strcmp(argv[1], "BFS") == 0) {
+    Movies m("IMDb moviesCSV.csv", "out3000.csv", 3000, true);
+  } else {
+    cout << "Invalid Argument" << endl;
   }
+  
 
   // Save an graph PNG:
   // m.getGraph().savePNG("Out");
 
+  // Calculate total time for program to run
+  auto stop = high_resolution_clock::now();
+  auto duration = duration_cast<milliseconds>(stop - start);
+  cout << "Program takes " << (duration.count() / 1000.0) << "s" << endl;
   return 0;
 }
