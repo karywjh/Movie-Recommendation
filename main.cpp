@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
     // Run with default source vertex
     if (argc == 2) {
       vector = m.getShortestPath(Vertex("tt0004181"));
-      cout << "Shortest Path from Movie tt0004181: (Not directly connected)" << endl;
+      cout << "Shortest Path from Movie tt0004181: (Not directly connected if there exist one)" << endl;
 
       for (Vertex v : vector) {
         cout << v.get_id() << ": " << v.get_name() << endl;
@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
     else {
       try {
         vector = m.getShortestPath(Vertex(argv[2]));
-        cout << "Shortest Path from Movie " << argv[2] << ": (Not directly connected)" << endl;
+        cout << "Shortest Path from Movie " << argv[2] << ": (Not directly connected if there exist one)" << endl;
         for (Vertex v : vector) {
           cout << v.get_id() << ": " << v.get_name() << endl;
         }

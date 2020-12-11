@@ -70,7 +70,7 @@ Movies::Movies(string file, string out_name, int num) : g_(true) {
 }
 
 Movies::Movies(string movies_file, string edge_file, bool read_edge) : g_(true) {
-    // First insert every node
+    // First insert every node without connecting
     std::ifstream inFile(movies_file);
     if (!inFile.is_open())
         throw std::runtime_error("Could not open movies file");
@@ -84,7 +84,7 @@ Movies::Movies(string movies_file, string edge_file, bool read_edge) : g_(true) 
     }
     inFile.close();
 
-    // Then insert edge using edge_file
+    // Then insert edge using pre-generated edge_file
     std::ifstream inFile2(edge_file);
     if (!inFile2.is_open())
         throw std::runtime_error("Could not open edges file");
@@ -115,7 +115,7 @@ Movies::Movies(string movies_file, string edge_file, int num, bool read_edge) : 
     }
     inFile.close();
 
-    // Then insert edge using edge_file
+    // Then insert edge using pre-generated edge_file
     std::ifstream inFile2(edge_file);
     if (!inFile2.is_open())
         throw std::runtime_error("Could not open edges file");
@@ -218,27 +218,6 @@ void Movies::insertMovieConnection(Vertex v, std::ofstream& myFile, string out_n
         }
     }
     
-    myFile.close();
-}
-
-void Movies::write_csv(std::string filename, std::vector<std::pair<std::string, std::vector<string>>> dataset) {
-    std::ofstream myFile(filename);
-
-    for(unsigned j = 0; j < dataset.size(); ++j) {
-        myFile << dataset.at(j).first;
-        if(j != dataset.size() - 1) myFile << ",";\
-    }
-    myFile << "\n";
-
-    for(unsigned i = 0; i < dataset.at(0).second.size(); ++i) {
-        for(unsigned j = 0; j < dataset.size(); ++j)
-        {
-            myFile << dataset.at(j).second.at(i);
-            if(j != dataset.size() - 1) myFile << ",";
-        }
-        myFile << "\n";
-    }
-
     myFile.close();
 }
 
@@ -427,16 +406,18 @@ vector<Vertex> Movies::shortestPathFilter(unordered_map<Vertex, std::pair<Vertex
             }
         }
         recommendations.push_back(neighbor);
-        cout << "We cannot find related path of this vertex" << endl;
-        cout << neighbor.get_id() << " is its closet neighbor" << endl;
+        cout << "We cannot find path to vertex " << s.get_id() << ": " << s.get_name() << " that's not directly connected" << endl;
+        cout << neighbor.get_id() << " is its closest neighbor" << endl;
     }   
     return recommendations;
 }
 
+// Get Shortest Path
 vector<Vertex> Movies::getShortestPath(Vertex s) {
     return shortestPathFilter(shortestPathHelper(s), s);
 }
 
+// Graph Coloring
 int Movies::greedyColoring() {
     vector<Vertex> vertices = g_.getVertices();
     size_t size = vertices.size();
@@ -484,4 +465,25 @@ int Movies::greedyColoring() {
         colors.insert(it->second);
     }
     return colors.size();
+}
+
+void Movies::write_csv(std::string filename, std::vector<std::pair<std::string, std::vector<string>>> dataset) {
+    std::ofstream myFile(filename);
+
+    for(unsigned j = 0; j < dataset.size(); ++j) {
+        myFile << dataset.at(j).first;
+        if(j != dataset.size() - 1) myFile << ",";\
+    }
+    myFile << "\n";
+
+    for(unsigned i = 0; i < dataset.at(0).second.size(); ++i) {
+        for(unsigned j = 0; j < dataset.size(); ++j)
+        {
+            myFile << dataset.at(j).second.at(i);
+            if(j != dataset.size() - 1) myFile << ",";
+        }
+        myFile << "\n";
+    }
+
+    myFile.close();
 }
