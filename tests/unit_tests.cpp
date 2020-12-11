@@ -123,7 +123,7 @@ TEST_CASE("BFS traversal works correctly with 3 vertices; length 1", "[weight=1]
   g.insertEdge(v1, v2);
   g.insertEdge(v1, v3);
   Movies m(&g);
-  vector<string> solution = {"A", "C", "B"};
+  vector<Vertex> solution = {v1, v3, v2};
   REQUIRE(m.BFS() == solution);
 }
 
@@ -147,7 +147,7 @@ TEST_CASE("BFS traversal works correctly with 6 vertices; length 2", "[weight=1]
   g.insertEdge(v2, v5);
   g.insertEdge(v2, v6);
   Movies m(&g);
-  vector<string> solution = {"B", "F", "E", "A", "D", "C"};
+  vector<Vertex> solution = {v2, v6, v5, v1, v4, v3};
   REQUIRE(m.BFS() == solution);
 }
 
@@ -177,7 +177,7 @@ TEST_CASE("BFS traversal works correctly with 8 vertices; length 3", "[weight=1]
   g.insertEdge(v5, v7);
   g.insertEdge(v4, v8);
   Movies m(&g);
-  vector<string> solution = {"B", "A", "D", "C", "H", "F", "E", "G"};
+  vector<Vertex> solution = {v2, v1, v4, v3, v8, v6, v5, v7};
   REQUIRE(m.BFS() == solution);
 }
 
@@ -213,7 +213,7 @@ TEST_CASE("BFS traversal works correctly with 10 vertices; length 4", "[weight=1
   g.insertEdge(v7, v9);
   g.insertEdge(v7, v10);
   Movies m(&g);
-  vector<string> solution = {"B", "A", "D", "C", "H", "F", "E", "G", "J", "I"};
+  vector<Vertex> solution = {v2, v1, v4, v3, v8, v6, v5, v7, v10, v9};
   REQUIRE(m.BFS() == solution);
 }
 
@@ -273,10 +273,10 @@ TEST_CASE("shortest path works with triangle plus one more edge", "[weight=1][pa
   g.setEdgeWeight(v2, v3, 1.0/4);
   g.setEdgeWeight(v2, v4, 1.0/5);
   Movies m(&g);
-  vector<Vertex> solution_1 = {v2};
+  vector<Vertex> solution_1 = {v1, v2, v4};
   vector<Vertex> solution_2;
-  vector<Vertex> solution_3 = {v2};
-  vector<Vertex> solution_4 = {v2};
+  vector<Vertex> solution_3 = {v3, v2, v4};
+  vector<Vertex> solution_4 = {v4, v2, v3};
   REQUIRE(m.shortestPath(v1) == solution_1);
   REQUIRE(m.shortestPath(v2) == solution_2);
   REQUIRE(m.shortestPath(v3) == solution_3);
@@ -307,11 +307,11 @@ TEST_CASE("shortest path works with triangle plus two more edges", "[weight=1][p
   g.setEdgeWeight(v2, v4, 1.0/5);
   g.setEdgeWeight(v4, v5, 1.0/6);
   Movies m(&g);
-  vector<Vertex> solution_1 = {v2};
-  vector<Vertex> solution_2 = {v4};
-  vector<Vertex> solution_3 = {v2};
-  vector<Vertex> solution_4 = {v2};
-  vector<Vertex> solution_5 = {v4};
+  vector<Vertex> solution_1 = {v1, v2, v4};
+  vector<Vertex> solution_2 = {v2, v4, v5};
+  vector<Vertex> solution_3 = {v3, v2, v4};
+  vector<Vertex> solution_4 = {v4, v2, v3};
+  vector<Vertex> solution_5 = {v5, v4, v2};
   REQUIRE(m.shortestPath(v1) == solution_1);
   REQUIRE(m.shortestPath(v2) == solution_2);
   REQUIRE(m.shortestPath(v3) == solution_3);
@@ -362,9 +362,9 @@ TEST_CASE("shortest path works with complex graph", "[weight=1][part=3]") {
   g.setEdgeWeight(v6, v7, 4.0);
   g.setEdgeWeight(v7, v8, 5.0);
   Movies m(&g);
-  vector<Vertex> solution_1 = {v6};
-  vector<Vertex> solution_2 = {v6};
-  vector<Vertex> solution_3 = {v5};
+  vector<Vertex> solution_1 = {v1, v6, v7};
+  vector<Vertex> solution_2 = {v5, v6, v1};
+  vector<Vertex> solution_3 = {v3, v5, v7};
   REQUIRE(m.shortestPath(v1) == solution_1);
   REQUIRE(m.shortestPath(v5) == solution_2);
   REQUIRE(m.shortestPath(v3) == solution_3);

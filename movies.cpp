@@ -13,6 +13,7 @@ using std::quoted;
 using std::make_heap;
 using std::push_heap;
 using std::pop_heap;
+using std::reverse;
 
 Movies::Movies() : g_(true) {
 
@@ -240,39 +241,54 @@ void Movies::write_csv(std::string filename, std::vector<std::pair<std::string, 
     myFile.close();
 }
 
-vector<string> Movies::BFS() {
+vector<Vertex> Movies::BFS() {
     Graph g = g_;
-    vector<string> ids;
+    vector<Vertex> ids;
+
+    //mark all vertices as unexplored at first
     for(Vertex v: g.getVertices()) {
         map[v] = "UNEXPLORED";
     }
+
+    //mark all edges as unexplored at first
     for(Edge e: g.getEdges()) {
         g.setEdgeLabel(e.source, e.dest, "UNEXPLORED");
     }
+
+    // call BFS helper on vertices that are unexplored yet
     for(Vertex v: g.getVertices()) {
         if(map[v] == "UNEXPLORED") {
             BFS(&g, v, ids);
         }
     }
+
+    // clear map each time BFS is finished
     map.clear();
     return ids;
 }
 
-void Movies::BFS(Graph* G, Vertex v, vector<string>& ids) {
+void Movies::BFS(Graph* G, Vertex v, vector<Vertex>& ids) {
+    // mark the current source as visited and push it to queue
     queue<Vertex> q;
     map[v] = "VISITED";
     q.push(v);
 
     while(!q.empty()) {
+        // for each vertex in queue, push it in ids, pop it from queue,
         v = q.front();
-        ids.push_back(v.get_id());
+        ids.push_back(v);
         q.pop();
+
+        // add all of its neighbors which are not visisted yet to queue
         for(Vertex w: G->getAdjacent(v)) {
+            // if the vertex is not visited yet, mark it as visited and push it in queue
             if(map[w] == "UNEXPLORED") {
                 G->setEdgeLabel(v, w, "DISCOVERY");
                 map[w] = "VISITED";
                 q.push(w);
             }
+            
+            // else if the edge between v, w is unexplored, mark the edge as cross. 
             else if(G->getEdgeLabel(v, w) == "UNEXPLORED") {
                 G->setEdgeLabel(v, w, "CROSS");
             }
@@ -321,20 +337,37 @@ double Movies::calcWeight(Vertex u, Vertex v) {
 }
 
 vector<Vertex> Movies::shortestPath(Vertex s) {
+    // map used to track distance to source
     unordered_map<Vertex, double, MyHash> d;
+
+    // map used to track the predecessor of each vertex. 
     unordered_map<Vertex, Vertex, MyHash> p;
+
+    // lambda function to build min heap. 
     auto compare = [&](Vertex& v1, Vertex& v2) {return d[v1] > d[v2];};
+
+    // mark the distance of all vertices to source as infinite at first, and mark all predecessor to nothing
     for(Vertex v: g_.getVertices()) {
         d[v] = INT_MAX;
         p[v] = Vertex();
     }
+
+    // mark the distance of source to itself as 0
     d[s] = 0;
+
+    // min heap(actually a wrapper of make_heap(), pop_heap(), and push_heap())
     vector<Vertex> Q;
+
+    // push all vertices to the min heap
     for(Vertex v: g_.getVertices()) {
         Q.push_back(v);
         push_heap(Q.begin(),Q.end(), compare);
     }
+    
+    // reorder the min heap based on the weight(the front is always the vertex with smallest weight)
     make_heap(Q.begin(),Q.end(),compare);
+
+    // use T mark visited
     Graph T(true, false);
     while (!Q.empty()) {
         Vertex u = Q.front();
@@ -354,6 +387,8 @@ vector<Vertex> Movies::shortestPath(Vertex s) {
     vector<Vertex> neighbors = g_.getAdjacent(s);
     Vertex destination;
     double min = INT_MAX;
+
+    // find a vertex that is closet to s among vertices that are not neighbors of s
     for(auto it = d.begin(); it != d.end(); it++) {
         if(std::find(neighbors.begin(), neighbors.end(), it->first) != neighbors.end() || it->first == s)
             continue;
@@ -363,10 +398,14 @@ vector<Vertex> Movies::shortestPath(Vertex s) {
         }
     }
     vector<Vertex> recommendations;
-    Vertex pre = p[destination];
-    while(pre != Vertex() && pre != s) {
+    Vertex pre = destination;
+    // keep track on predecessor to produce the path
+    while(pre != Vertex()) {
         recommendations.push_back(pre);
         pre = p[pre];
-    } 
+    }
+    reverse(recommendations.begin(), recommendations.end());
+    cout << "source: " << s.get_id() << endl;
+    cout << "destination: " << destination.get_id() << endl;
     return recommendations;
 }
