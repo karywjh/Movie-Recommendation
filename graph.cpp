@@ -73,6 +73,20 @@ Graph::Graph(bool weighted, int numVertices, unsigned long seed)
     }
 }
 
+Graph::Graph(const Graph& g): adjacency_list(g.adjacency_list), weighted(g.weighted),directed(g.directed),random(g.random), picNum(g.picNum), picName(g.picName) {
+
+}
+
+Graph& Graph::operator=(const Graph& g) {
+    weighted = g.weighted;
+    directed = g.directed;
+    random = g.random;
+    picNum = g.picNum;
+    picName = g.picName;
+    adjacency_list = g.adjacency_list;
+    return *this;
+}
+
 bool Graph::isEmpty() const {
     return adjacency_list.empty();
 }
@@ -189,7 +203,7 @@ string Graph::getEdgeLabel(Vertex source, Vertex destination) const
 {
     if(assertEdgeExists(source, destination, __func__) == false)
         return InvalidLabel;
-    return adjacency_list[source][destination].getLabel();
+    return adjacency_list[source][destination].get_label();
 }
 
 int Graph::getEdgeWeight(Vertex source, Vertex destination) const
@@ -260,14 +274,17 @@ bool Graph::insertEdge(Vertex source, Vertex destination)
         adjacency_list[source] = unordered_map<Vertex, Edge, MyHash>();
     }
         //source vertex exists
-    adjacency_list[source][destination] = Edge(source, destination);
+    Vertex orig_source = adjacency_list.find(source)->first;
+    Vertex orig_destination = adjacency_list.find(destination)->first;
+
+    adjacency_list[orig_source][orig_destination] = Edge(orig_source, orig_destination);
     if(!directed)
     {
         if(adjacency_list.find(destination)== adjacency_list.end())
         {
-            adjacency_list[destination] = unordered_map<Vertex, Edge, MyHash>();
+            adjacency_list[orig_destination] = unordered_map<Vertex, Edge, MyHash>();
         }
-        adjacency_list[destination][source] = Edge(source, destination);
+        adjacency_list[orig_destination][orig_source] = Edge(orig_source, orig_destination);
     }
     
     return true;
@@ -294,12 +311,12 @@ Edge Graph::setEdgeWeight(Vertex source, Vertex destination, double weight)
         return InvalidEdge;
     Edge e = adjacency_list[source][destination];
     //std::cout << "setting weight: " << weight << std::endl;
-    Edge new_edge(source, destination, weight, e.getLabel());
+    Edge new_edge(source, destination, weight, e.get_label());
     adjacency_list[source][destination] = new_edge;
 
     if(!directed)
         {
-            Edge new_edge_reverse(destination,source, weight, e.getLabel());
+            Edge new_edge_reverse(destination,source, weight, e.get_label());
             adjacency_list[destination][source] = new_edge_reverse;
         }
 
@@ -393,7 +410,7 @@ void Graph::print() const
 {
     for (auto it = adjacency_list.begin(); it != adjacency_list.end(); ++it) 
     {
-        cout << it->first.get_id() << ": " << it->first.get_name() << endl;
+        cout << it->first.get_id() << ": " << it->first.get_name() << ": " << it->first.get_description() << endl;
         for (auto it2 = it->second.begin(); it2 != it->second.end(); ++it2) 
         {
             std::stringstream ss;
@@ -401,7 +418,7 @@ void Graph::print() const
             string vertexColumn = "    => " + ss.str();
             vertexColumn += " " ;
             cout << std::left << std::setw(26) << vertexColumn;
-            string edgeColumn = "edge label = \"" + it2->second.getLabel()+ "\"";
+            string edgeColumn = "edge label = \"" + it2->second.get_label()+ "\"";
             cout << std::left << std::setw(26) << edgeColumn;
             if (weighted)
                 cout << "weight = " << it2->second.getWeight();
@@ -476,7 +493,7 @@ void Graph::savePNG(string title) const
             neatoFile << vertex2Text;
             neatoFile << "\"";
 
-            string edgeLabel = it2->second.getLabel();
+            string edgeLabel = it2->second.get_label();
             if (edgeLabel == "WIN") {
                 neatoFile << "[color=\"blue\"]";
             } else if (edgeLabel == "LOSE") {

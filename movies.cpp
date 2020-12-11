@@ -2,29 +2,38 @@
 #include <queue>
 #include <iostream>
 #include <sstream>
+#include <map>
+#include <algorithm>
 
 using std::string;
 using std::queue;
 using std::cout;
 using std::endl;
 using std::quoted;
+using std::make_heap;
+using std::push_heap;
+using std::pop_heap;
 
 Movies::Movies() : g_(true) {
 
 }
 
-Movies::Movies(vector<Vertex> vertices) : g_(true) {
-    std::ofstream outFile("output.csv");
+Movies::Movies(const Graph* g) : g_(true) {
+    g_ = *g;
+}
+
+Movies::Movies(vector<Vertex> vertices, string out_name) : g_(true) {
+    std::ofstream outFile(out_name);
 
     for (Vertex v : vertices) {
-        insertMovieConnection(v, outFile);
+        insertMovieConnection(v, outFile, out_name);
     }
 }
 
-Movies::Movies(string file) : g_(true) {
+Movies::Movies(string file, string out_name) : g_(true) {
 
     std::ifstream inFile(file);
-    std::ofstream outFile("output.csv");
+    std::ofstream outFile(out_name);
 
     if (!inFile.is_open())
         throw std::runtime_error("Could not open file");
@@ -35,13 +44,13 @@ Movies::Movies(string file) : g_(true) {
     // read every line and insert node
     while (getline(inFile, id, ',')) {
         Vertex v = lineToVertex(inFile, id);
-        insertMovieConnection(v, outFile);
+        insertMovieConnection(v, outFile, out_name);
     }
 }
 
-Movies::Movies(string file, int num) : g_(true) {
+Movies::Movies(string file, string out_name, int num) : g_(true) {
     std::ifstream inFile(file);
-    std::ofstream myFile("output.csv");
+    std::ofstream myFile(out_name);
 
     if (!inFile.is_open())
         throw std::runtime_error("Could not open file");
@@ -53,8 +62,68 @@ Movies::Movies(string file, int num) : g_(true) {
     // Limited to num lines of data
     while (i < num && getline(inFile, id, ',')) {
         Vertex v = lineToVertex(inFile, id);
-        insertMovieConnection(v, myFile);
+        insertMovieConnection(v, myFile, out_name);
         i++;
+    }
+}
+
+Movies::Movies(string movies_file, string edge_file, bool read_edge) : g_(true) {
+    // First insert every node
+    std::ifstream inFile(movies_file);
+    if (!inFile.is_open())
+        throw std::runtime_error("Could not open movies file");
+
+    string id, placeholder;
+    getline(inFile, placeholder, '\n'); // get rid of first line (title)
+
+    while (getline(inFile, id, ',')) {
+        Vertex v = lineToVertex(inFile, id);
+        g_.insertVertex(v);
+    }
+    inFile.close();
+
+    // Then insert edge using edge_file
+    std::ifstream inFile2(edge_file);
+    if (!inFile2.is_open())
+        throw std::runtime_error("Could not open edges file");
+
+    string first, second, w_str;
+    while (getline(inFile2, first, ',')) {
+        getline(inFile2, second, ',');
+        getline(inFile2, w_str, '\n');
+        g_.insertEdge(Vertex(first), Vertex(second));
+        g_.setEdgeWeight(Vertex(first), Vertex(second), std::stod(w_str));
+    }
+}
+
+Movies::Movies(string movies_file, string edge_file, int num, bool read_edge) : g_(true) {
+    // First insert every node
+    std::ifstream inFile(movies_file);
+    if (!inFile.is_open())
+        throw std::runtime_error("Could not open movies file");
+
+    string id, placeholder;
+    getline(inFile, placeholder, '\n'); // get rid of first line (title)
+
+    int i = 0;
+    while (i < num && getline(inFile, id, ',')) {
+        Vertex v = lineToVertex(inFile, id);
+        g_.insertVertex(v);
+        i++;
+    }
+    inFile.close();
+
+    // Then insert edge using edge_file
+    std::ifstream inFile2(edge_file);
+    if (!inFile2.is_open())
+        throw std::runtime_error("Could not open edges file");
+
+    string first, second, w_str;
+    while (getline(inFile2, first, ',')) {
+        getline(inFile2, second, ',');
+        getline(inFile2, w_str, '\n');
+        g_.insertEdge(Vertex(first), Vertex(second));
+        g_.setEdgeWeight(Vertex(first), Vertex(second), std::stod(w_str));
     }
 }
 
@@ -79,7 +148,7 @@ Vertex Movies::lineToVertex(std::ifstream& inFile, string id) {
     }
 
     getline(inFile, yearstr, ',');
-    cout << id << " " << name << " " << language << " year:" << yearstr << "." << endl;
+    // cout << id << " " << name << " " << language << " year:" << yearstr << "." << endl;
     year = stoi(yearstr);
     getline(inFile, rat, ',');
     rating = std::stod(rat);
@@ -124,12 +193,12 @@ Vertex Movies::lineToVertex(std::ifstream& inFile, string id) {
     return Vertex(id, name, language, actors, director, country, genre, year, rating, popularity, description);
 }
 
-void Movies::insertMovieConnection(Vertex v, std::ofstream& myFile) {
+void Movies::insertMovieConnection(Vertex v, std::ofstream& myFile, string out_name) {
     // Connect it with other vertices
     g_.insertVertex(v);
     // cout << v.get_id() << " " << v.get_name() << endl;
 
-    myFile.open("output.csv", std::ios::out |std::ofstream::app);
+    myFile.open(out_name, std::ios::out | std::ofstream::app);
 
     for (Vertex u: g_.getVertices()) {
         if (v != u) {
@@ -142,7 +211,7 @@ void Movies::insertMovieConnection(Vertex v, std::ofstream& myFile) {
                 // Store edge to file
                 string id_v = v.get_id();
                 string id_u = u.get_id();
-                myFile << v.get_id() << "," << u.get_id() << "\n";
+                myFile << v.get_id() << "," << u.get_id() << "," << weight << "\n";
             }
         }
     }
@@ -171,37 +240,41 @@ void Movies::write_csv(std::string filename, std::vector<std::pair<std::string, 
     myFile.close();
 }
 
-void Movies::BFS(Graph G) {
-    for(Vertex v: G.getVertices()) {
-        v.set_label("UNEXPLORED");
+vector<string> Movies::BFS() {
+    Graph g = g_;
+    vector<string> ids;
+    for(Vertex v: g.getVertices()) {
+        map[v] = "UNEXPLORED";
     }
-    for(Edge e: G.getEdges()) {
-        e.setLabel("UNEXPLORED");
+    for(Edge e: g.getEdges()) {
+        g.setEdgeLabel(e.source, e.dest, "UNEXPLORED");
     }
-    for(Vertex v: G.getVertices()) {
-        if(v.get_label() == "UNEXPLORED") {
-            BFS(G, v);
+    for(Vertex v: g.getVertices()) {
+        if(map[v] == "UNEXPLORED") {
+            BFS(&g, v, ids);
         }
     }
+    map.clear();
+    return ids;
 }
 
-void Movies::BFS(Graph G, Vertex v) {
+void Movies::BFS(Graph* G, Vertex v, vector<string>& ids) {
     queue<Vertex> q;
-    v.set_label("VISITED");
+    map[v] = "VISITED";
     q.push(v);
 
     while(!q.empty()) {
-        v = q.back();
-        cout << "name: " << v.get_name() << " Description: " << v.get_description() << endl;
+        v = q.front();
+        ids.push_back(v.get_id());
         q.pop();
-        for(Vertex w: G.getAdjacent(v)) {
-            if(w.get_label() == "UNEXPLORED") {
-                G.setEdgeLabel(v, w, "DISCOVERY");
-                w.set_label("VISITED");
+        for(Vertex w: G->getAdjacent(v)) {
+            if(map[w] == "UNEXPLORED") {
+                G->setEdgeLabel(v, w, "DISCOVERY");
+                map[w] = "VISITED";
                 q.push(w);
             }
-            else if(G.getEdge(v, w).getLabel() == "UNEXPLORED") {
-                G.setEdgeLabel(v, w, "CROSS");
+            else if(G->getEdgeLabel(v, w) == "UNEXPLORED") {
+                G->setEdgeLabel(v, w, "CROSS");
             }
         }
     }
@@ -245,4 +318,55 @@ double Movies::calcWeight(Vertex u, Vertex v) {
     }
 
     return 1.0 / double(total_score);
+}
+
+vector<Vertex> Movies::shortestPath(Vertex s) {
+    unordered_map<Vertex, double, MyHash> d;
+    unordered_map<Vertex, Vertex, MyHash> p;
+    auto compare = [&](Vertex& v1, Vertex& v2) {return d[v1] > d[v2];};
+    for(Vertex v: g_.getVertices()) {
+        d[v] = INT_MAX;
+        p[v] = Vertex();
+    }
+    d[s] = 0;
+    vector<Vertex> Q;
+    for(Vertex v: g_.getVertices()) {
+        Q.push_back(v);
+        push_heap(Q.begin(),Q.end(), compare);
+    }
+    make_heap(Q.begin(),Q.end(),compare);
+    Graph T(true, false);
+    while (!Q.empty()) {
+        Vertex u = Q.front();
+        pop_heap(Q.begin(), Q.end(), compare);
+        Q.pop_back();
+        T.insertVertex(u);
+        for(Vertex v: g_.getAdjacent(u)) {
+            if(T.vertexExists(v))
+                continue;
+            if((d[u] + g_.getEdge(u, v).getWeight()) < d[v]) {
+                d[v] = d[u] + g_.getEdge(u, v).getWeight();
+                p[v] = u;
+                make_heap(Q.begin(),Q.end(),compare);
+            }
+        }
+    }
+    vector<Vertex> neighbors = g_.getAdjacent(s);
+    Vertex destination;
+    double min = INT_MAX;
+    for(auto it = d.begin(); it != d.end(); it++) {
+        if(std::find(neighbors.begin(), neighbors.end(), it->first) != neighbors.end() || it->first == s)
+            continue;
+        if(it->second < min) {
+            min = it->second;
+            destination = it->first;
+        }
+    }
+    vector<Vertex> recommendations;
+    Vertex pre = p[destination];
+    while(pre != Vertex() && pre != s) {
+        recommendations.push_back(pre);
+        pre = p[pre];
+    } 
+    return recommendations;
 }
