@@ -96,6 +96,10 @@ Made write edge connections to output file while adding edges worked. Written co
 
 Made main.cpp, that user can pass in different arguments to run different algorithms.
 
+Finished writing Shortest Path Algorithm and Graph Coloring Algorithm and fixed errors.
+
+Organized and code and file structure, added more comment to make code clean and understandable.
+
 <br />
 
 ### Details (Meeting Notes)
