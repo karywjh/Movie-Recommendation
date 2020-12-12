@@ -103,4 +103,4 @@ Made main.cpp, that user can pass in different arguments to run different algori
 
 **Dec 10, 2020**
 
-Discussed how algorithms can be implemented and improved. Tested and fixed issues with constructors and algorithms.
+Discussed how algorithms can be implemented and improved. Tested and fixed issues with constructors and algorithms. We improve BFS so disconnected vertex can also be visited; we improve shortest path algorithm so a neighbor of the source vertex will be returned if the returned path is empty.

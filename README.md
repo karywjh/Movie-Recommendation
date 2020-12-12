@@ -7,7 +7,7 @@ Made by Enxu Han, Jiahui(Kary) Wang, Junbo He, Shun Li
 Our team uses [IMDb dataset](https://www.kaggle.com/stefanoleone992/imdb-extensive-dataset), designed and implemented a movie recommendation program using graph data structure.
 
 ## Algorithms Used
-blablabla
+The 3 algorithms we choose to implement is BFS traversal; Dijkstra's Algorithm(shortest path); and graph-coloring.
 
 ## Getting Started
 
