@@ -7,7 +7,7 @@ Made by Enxu Han, Jiahui(Kary) Wang, Junbo He, Shun Li
 Our team uses [IMDb dataset](https://www.kaggle.com/stefanoleone992/imdb-extensive-dataset), designed and implemented a movie recommendation program using graph data structure.
 
 ## Algorithms Used
-The 3 algorithms we choose to implement is BFS traversal; Dijkstra's Algorithm(shortest path); and graph-coloring algorithm.
+The 3 algorithms we choose to implement aremake  BFS traversal; Dijkstra's Algorithm(shortest path); and graph-coloring algorithm.
 
 ## Getting Started
 
@@ -26,8 +26,8 @@ make final_project
 ./final_project coloring    // runs Graph Coloring Algorithm
 ./final_project BFS         // runs BFS and print out movie names in BFS order
 
-./final_project shortestpath     // runs Graph Coloring Algorithm
-./final_project shortestpath id  // runs Graph Coloring Algorithm with user specified id as the source
+./final_project shortestpath     // runs shortest path Algorithm
+./final_project shortestpath id  // runs shortest path Algorithm with user specified id as the source
 //example: (replace id with e.g. tt0006206, tt0007047, tt0010418, and etc.)
 ./final_project shortestpath tt0005060
 ```
