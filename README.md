@@ -1,8 +1,12 @@
-# Final Project 
+# Movie Recommendation Project (CS225)
 Collaborated with Enxu Han, Junbo He, and Shun Li
 
 ## Project
 Our team uses [IMDb dataset](https://www.kaggle.com/stefanoleone992/imdb-extensive-dataset), designed and implemented a movie recommendation program using graph data structure.
+
+## Goal:
+
+We will build a movie search and recommendation engine where users can search a specific movie through actors, directors, year, and other tags. Each Vertex represent a specific movie which will be built with 'structure' in C++ and contains tags such as rating scores; directors; actors; country and so on. Each edge which represent the similarity between 2 movies will be weighted and undirected. The similary is calculated through weight mean. 2 vertices will be connected only if the weight mean reached 30. 
 
 ## Project Presentation
 https://youtu.be/dAwr9vFgYwA
