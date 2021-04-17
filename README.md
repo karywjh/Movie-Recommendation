@@ -1,7 +1,5 @@
 # Final Project 
-*enxuhan2-jiahuiw4-junbohe2-shunl2*
-
-Made by Enxu Han, Jiahui(Kary) Wang, Junbo He, Shun Li
+Collaborated with Enxu Han, Junbo He, and Shun Li
 
 ## Project
 Our team uses [IMDb dataset](https://www.kaggle.com/stefanoleone992/imdb-extensive-dataset), designed and implemented a movie recommendation program using graph data structure.
@@ -10,7 +8,7 @@ Our team uses [IMDb dataset](https://www.kaggle.com/stefanoleone992/imdb-extensi
 https://youtu.be/dAwr9vFgYwA
 
 ## Algorithms Used
-The 3 algorithms we choose to implement aremake  BFS traversal; Dijkstra's Algorithm(shortest path); and graph-coloring algorithm.
+The 3 algorithms we choose to implement are BFS traversal; Dijkstra's Algorithm(shortest path); and graph-coloring algorithm.
 
 ## Getting Started
 
